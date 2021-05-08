@@ -45,5 +45,9 @@ module.exports = {
         inBlock: "交易已上链",
         contributeOk: "投票成功",
         withdrawOk: "赎回成功"
+    },
+    cs: {
+        nominate: "投票",
+        nominated: "已投票",
     }
 }

@@ -27,3 +27,16 @@ export const RETIRING_PERIOD = {
     KUSAMA: 60 * 60,
     ROCOCO: 60 * 60
 }
+
+export const Test_Crowdstaking_Data = [
+    {
+        id: '0',
+        name: 'BML',
+        icon: 'https://cdn.wherein.mobi/crowdloan/logo/bml.png'
+    },
+    {
+        id: '1',
+        name: 'Peanut',
+        icon: 'https://cdn.wherein.mobi/nutbox.png'
+    }
+]

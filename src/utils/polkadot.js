@@ -18,10 +18,10 @@ import {
 import store from "../store"
 
 export async function getApi() {
-  if (store.state.api[store.state.symbol]) {
-    return store.state.api[store.state.symbol]
+  if (store.state.api) {
+    return store.state.api
   }
-  const wsProvider = new WsProvider(POLKADOT_CHAIN_WEB_SOCKET_MAP[store.state.symbol])
+  const wsProvider = new WsProvider(POLKADOT_CHAIN_WEB_SOCKET_MAP["POLKADOT"])
   const api = await ApiPromise.create({
     provider: wsProvider,
     rpc: jsonrpc,

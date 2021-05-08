@@ -48,7 +48,7 @@ export const subscribeFundInfo = async (crowdloanCard) => {
   // cancel last 
   let unsubFund = store.getters.getSubFund()
   if (unsubFund) return;
-  store.commit('saveLoadingFunds', true)
+  store.commit('saveLoadingStaking', true)
   const paraId = crowdloanCard.map(c => parseInt(c.para.paraId))
   const api = await getApi()
   try {
@@ -110,12 +110,12 @@ export const subscribeFundInfo = async (crowdloanCard) => {
       } else {
         store.commit('saveSubFund', null);
       }
-      store.commit('saveLoadingFunds', false)
+      store.commit('saveLoadingStaking', false)
     }));
     store.commit('saveSubFund', unsubFund);
   } catch (e) {
     console.error('error', e);
-    store.commit('saveLoadingFunds', false)
+    store.commit('saveLoadingStaking', false)
   }
 }
 

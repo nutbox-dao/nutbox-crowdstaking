@@ -32,12 +32,13 @@
               </b-sidebar>
             </div>
             <b-collapse id="nav-collapse" is-nav>
-              <b-navbar-nav class="mr-auto">
+              <!-- <b-navbar-nav class="mr-auto">
                 <b-nav-item v-for="item of hMenuOptions" :key="item.id"
                             href="javascript:void(0)" :class="activeNav === item.id? 'active':''"
                             @click="selectMenu(item.id, item.url)">{{ item.label }}
                 </b-nav-item>
-              </b-navbar-nav>
+              </b-navbar-nav> -->
+              <div class="mr-auto"></div>
               <div class="mobile-address">
                 <p style="word-break: break-all">{{ account && account.address}}</p>
               </div>
@@ -66,13 +67,6 @@
                         </template>
                       </b-dropdown-item>
                       <b-dropdown-divider v-if="Object.keys(allAccounts || []).length>0"></b-dropdown-divider>
-                      <b-dropdown-item>
-                        <div class="flex-start-center" @click="selectMenu('contributions', '/contributions')">
-                          <!-- <b-avatar square size="sm" class="mr-2" style="opacity: .2">·</b-avatar> -->
-                          <img class="menu-icon" :src="contributionsIcon" alt="">
-                          <span class="menu-text">{{$t('account.contributions')}}</span>
-                        </div>
-                      </b-dropdown-item>
                       <b-dropdown-item>
                         <div class="flex-start-center" @click="selectMenu('dashboard', '/dashboard')" v-if="commnunityIds.indexOf(account && account.address) !== -1">
                           <!-- <b-avatar square size="sm" class="mr-2" style="opacity: .2">·</b-avatar> -->
@@ -117,6 +111,7 @@ import ConnectWallet from './components/Buttons/ConnectWallet'
 import Identicon from '@polkadot/vue-identicon'
 import { getBalance, loadAccounts } from './utils/account'
 import { getCommnunitys } from './apis/api'
+import { subBlock } from "./utils/block"
 
 export default {
   name: 'App',
@@ -147,7 +142,7 @@ export default {
         { id: 'home', url: '/', label: this.$t('homePage.home'), h: true, v: false },
         { id: 'kusama', url: '/kusama', label: 'Kusuma ' + this.$t('homePage.crowdloan'), h: true, v: true },
         { id: 'polkadot', url: '/polkadot', label: 'Polkadot ' + this.$t('homePage.crowdloan'), h: true, v: true },
-        { id: 'contributions', url: '/contributions', label: this.$t('account.contributions'), h: false, v: true },
+        // { id: 'contributions', url: '/contributions', label: this.$t('account.contributions'), h: false, v: true },
         { id: 'dashboard', url: '/dashboard', label: this.$t('account.dashboard'), h: false, v: true },
         { id: 'en', url: 'en', label: "English", h: false, v: true },
         { id: 'zh', url: 'zh-CN', label: "中文", h: false, v: true }
@@ -191,7 +186,7 @@ export default {
     loadAccounts()
   },
   async created () {
-    this.$store.commit('saveSymbol', 'ROCOCO')
+    subBlock()
     // await connect();
   },
   beforeDestroy () {

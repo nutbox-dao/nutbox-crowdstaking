@@ -45,5 +45,9 @@ module.exports = {
         inBlock: "Transaction included at blockHash.",
         contributeOk: "Contribution Success!",
         withdrawOk: "Withdraw Success!"
+    },
+    cs: {
+        nominate: "Nominate",
+        nominated: "Nominated",
     }
 }
