@@ -32,12 +32,22 @@ import {
 
   export const getBonded = async () => {
       const api = await getApi()
-      const sub = await api.query.staking.bonded(store.state.account.address, (bonded) => {
-          console.log('bonded', bonded.toJSON());
-        store.commit('saveBonded', bonded.toJSON())
-      })
+      const bonded = await api.query.staking.bonded(store.state.account.address)
+      console.log('bonded', bonded.toJSON());
+      return bonded.toJSON();
   }
 
   export const getNominators = async () => {
+    const api = await getApi()
+    const nominators = await api.query.staking.nominators(store.state.account.address)
+    console.log('nominators', nominators.toJSON());
+    return nominators.toJSON()
+  }
 
+  export const nominate = async (nominators, communityId, projectId) => {
+
+  }
+
+  export const bondAndNominate = async (nominators, communityId, projectId) => {
+    
   }

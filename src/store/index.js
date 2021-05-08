@@ -12,6 +12,7 @@ export default new Vuex.Store({
     lang: Cookie.get(LOCALE_KEY),
     subBalance: {},
     bonded: '',
+    nominators: '',
     communitys: [],
     isConnected: true,
     loadingStaking: true,
@@ -34,6 +35,9 @@ export default new Vuex.Store({
     },
     saveBonded: (state, bonded) => {
       state.bonded = bonded
+    },
+    saveNominators: (state, nominators) => {
+      state.nominators = nominators
     },
     saveApiState: (state, apiState) => {
       state.apiState = apiState

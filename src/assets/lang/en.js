@@ -49,5 +49,11 @@ module.exports = {
     cs: {
         nominate: "Nominate",
         nominated: "Nominated",
+        inputBondAmount: "Please Input ",
+        bond: "Bond",
+        available: "Available",
+        bondAndNominate: " Bond & Nominate",
+        cancel: "cancel",
+        bondInfo: "Please keep a small amount for the subsequent fee\n It is recommended to bind at least 1 DOT\nYou need to wait 28 days after unbond"
     }
 }

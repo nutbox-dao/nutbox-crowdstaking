@@ -29,21 +29,52 @@
         {{ $t('cs.nominated') }}
       </button> -->
     </div>
+
+      <b-modal
+      v-model="showNominate"
+      modal-class="custom-modal"
+      centered
+      hide-header
+      hide-footer
+      no-close-on-backdrop
+    >
+      <TipNominator
+        :communityId="communityId"
+        :projectId="projectId"
+        @hideContribute="showNominate = false"
+      />
+    </b-modal>
+
+          <b-modal
+      v-model="showBondAndNominator"
+      modal-class="custom-modal"
+      centered
+      hide-header
+      hide-footer
+      no-close-on-backdrop
+    >
+      <TipBondAndNominator
+        :communityId="communityId"
+        :projectId="projectId"
+        @hideContribute="showBondAndNominator = false"
+      />
+    </b-modal>
   </div>
 </template>
 
 <script>
+import TipBondAndNominator from './TipBoxes/TipBondAndNominator'
+import TipNominator from './TipBoxes/TipNominator'
 import { mapState, mapGetters } from "vuex";
 import { TOKEN_SYMBOL, PARA_STATUS, LOCALE_KEY } from "../config";
-import { BLOCK_SECOND, TIME_PERIOD, Test_Crowdstaking_Data } from "../constant";
-import { calStatus } from "../utils/crowdloan";
-import { getBonded } from "../utils/staking"
+import { Test_Crowdstaking_Data } from "../constant";
+import { getBonded, getNominators } from "../utils/staking"
 
 export default {
   data() {
     return {
-      showContribute: false,
-      showWithdraw: false,
+      showNominate: false,
+      showBondAndNominator: false,
       tokenSymbol: TOKEN_SYMBOL,
       status: PARA_STATUS.COMPLETED,
       cardInfo: Test_Crowdstaking_Data
@@ -58,10 +89,17 @@ export default {
     },
   },
   components: {
+    TipBondAndNominator,
+    TipNominator
   },
   methods: {
-    nominate() {
-      getBonded()
+    async nominate() {
+      const bonded = await getBonded()
+      if (bonded){
+        this.showNominate = true
+      }else {
+        this.showBondAndNominator = true
+      }
     }
   },
   watch: {
