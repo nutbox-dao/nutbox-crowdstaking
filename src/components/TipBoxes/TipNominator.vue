@@ -7,158 +7,88 @@
       @click="hide"
     />
     <div class="tip-contribute">
-      <div class="text-center mb-4 font20" v-if="lang==='en'">
-        Contribute to<span class="big"> {{ paraName }} </span>crowdloan <br />
-        fund in<span class="big"> {{ symbol }} </span>network
+      <div class="text-center mb-4 font20" v-if="lang === 'en'">
+        Nominate to<span class="big"> BML's </span>validators <br />
+        through<span class="big"> {{ cardInfo.name }} </span>community
       </div>
       <div class="text-center mb-4 font20" v-else>
-        为<span class="big"> {{ paraName }} </span>项目<br/>
-        在<span class="big"> {{ symbol }} </span>网络中的平行链竞拍投票
+        通过<span class="big"> {{ cardInfo.name }} </span>社区<br />
+        为<span class="big"> BML </span>的验证者节点投票<br />
       </div>
-      <div class="text-center mb-4 font14" style="color: red;">
-        {{ $t('tip.tokenSafeTip', {symbol}) }}
+
+      <div v-if="needToCancelValidators > 0">
+        <p>{{ $t("cs.cancelValidorsInfo", { n: needToCancelValidators }) }}</p>
       </div>
-      <div class="input-group-box">
-        <div class="label">{{ $t('crowdloan.amount')}}</div>
-        <div class="flex-between-center">
-          <input
-            type="number"
-            v-model="inputAmount"
-            :placeholder="$t('crowdloan.inputAmount')"
-          />
-          <span>{{ paraTokenSymbol }}</span>
-        </div>
-      </div>
-      <div class="input-group-box">
-        <div class="label">{{ $t('crowdloan.nominator')}}</div>
-        <div class="flex-between-center">
-          <input
-            type="text"
-            v-model="inputNonimator"
-            :placeholder="$t('crowdloan.inputNominator')"
-          />
-          <span class="text-grey" style="opacity: 0.4">{{ $t('crowdloan.optional') }}</span>
-        </div>
-      </div>
-      <button class="primary-btn" @click="confirm" :disabled="isComtribution">
-        <b-spinner small type="grow" v-show="isComtribution"></b-spinner>{{ $t('crowdloan.confirm') }}
+
+      <button class="primary-btn" @click="confirm" :disabled="isNominating">
+        <b-spinner small type="grow" v-show="isNominating"></b-spinner
+        >{{ $t("cs.confirm") }}
       </button>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import { validAddress } from "../../utils/polkadot";
-import BN from "bn.js";
+import { mapState } from "vuex";
+import { Test_Validators, PROJECTID } from "../../config";
+import { nominate } from "../../utils/staking";
 
 export default {
   data() {
     return {
       inputAmount: "",
       inputNonimator: "",
-      paraTokenSymbol: '',
-      isComtribution: false,
+      paraTokenSymbol: "",
+      isNominating: false,
     };
   },
   props: {
-    communityId: {
-      type: String,
+    cardInfo: {
+      type: Object,
     },
-    projectId: {
-      type: Number,
-    }
   },
   computed: {
     ...mapState(["symbol", "balance", "lang", "bonded", "nominators"]),
-    ...mapGetters([]),
+    availableNominators() {
+      return this.nominators.filter((n) => Test_Validators.indexOf(n) === -1);
+    },
+    needToCancelValidators() {
+      return this.availableNominators.length + Test_Validators.length - 16;
+    },
   },
   methods: {
     hide() {
-      if (this.isComtribution) return;
-      this.$emit("hideContribute");
+      if (this.isNominating) return;
+      this.$emit("hideNominate");
     },
-    checkInput() {
-      const reg = /^\d+(\.\d+)?$/;
-      const res = reg.test(this.inputAmount);
-      if (!res) {
-        this.$bvToast.toast("Input error!", {
-          title: this.$t('tip.tips'),
-          autoHideDelay: 5000,
-          variant: "warning", // info success danger
-        });
-        return false;
+    getNominateValidators() {
+      if (this.needToCancelValidators > 0) {
+      } else {
+        
       }
-      this.inputNonimator = this.inputNonimator?.trim()
-      if (
-        this.inputNonimator &&
-        this.inputNonimator.length > 0 &&
-        !validAddress(this.inputNonimator)
-      ) {
-        this.$bvToast.toast(this.$t('tip.wrongNominatorAddress'), {
-          title: this.$t('tip.tips'),
-          autoHideDelay: 5000,
-          variant: "warning", // info success danger
-        });
-        return false;
-      }
-
-      const amount = parseFloat(this.inputAmount);
-
-      if (amount < 1) {
-        this.$bvToast.toast(
-          this.$t('tip.belowMinContribution'),
-          {
-            title: this.$t('tip.tips'),
-            autoHideDelay: 5000,
-            variant: "warning",
-          }
-        );
-        return;
-      }
-
-      // below cap
-      const fund = this.getFundInfo(this.paraId);
-      const raised = fund.raised;
-      const cap = fund.cap;
-      const gap = cap.sub(raised);
-      if (gap.lt(new BN(amount))) {
-        this.$bvToast.toast(this.$t(tip.outOfCap), {
-          title: this.$t('tip.tips'),
-          autoHideDelay: 5000,
-          variant: "warning", // info success danger
-        });
-        return false;
-      }
-      if (this.balance.lte(new BN(amount).mul(new BN(10).pow(this.decimal)))) {
-        this.$bvToast.toast(this.$t('tip.insufficientBalance'), {
-          title: this.$t('tip.tips'),
-          autoHideDelay: 5000,
-          variant: "warning", // info success danger
-        });
-        return false;
-      }
-      return true;
     },
     async confirm() {
-      if (!this.checkInput()) {
-        return;
-      }
       try {
-       
+        this.isNominating = true
+        const validators = this.getNominateValidators();
+        await nominate(validators, this.cardInfo.communityId, PROJECTID, (info, param) => {
+          this.$bvToast.toast(info, param)
+        },() => {
+          this.$emit('hideNominate')
+        });
       } catch (e) {
         console.log("eee", e);
         this.$bvToast.toast(e.message, {
-          title: this.$t('tip.error'),
+          title: this.$t("tip.error"),
           autoHideDelay: 5000,
           variant: "danger",
         });
       } finally {
+        this.isNominating = false
       }
     },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 
@@ -206,7 +136,7 @@ export default {
     min-width: 5rem;
   }
 }
-.label{
+.label {
   text-align: left;
 }
 </style>

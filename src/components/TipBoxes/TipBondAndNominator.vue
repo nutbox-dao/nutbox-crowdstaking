@@ -21,8 +21,8 @@
         <p class="bondInfo">{{ $t("cs.bondInfo2") }}</p>
         <p class="bondInfo">{{ $t("cs.bondInfo3") }}</p>
       </div>
-      <button class="primary-btn" @click="confirm" :disabled="isComtribution">
-        <b-spinner small type="grow" v-show="isComtribution"></b-spinner
+      <button class="primary-btn" @click="confirm" :disabled="isBondAndNominating">
+        <b-spinner small type="grow" v-show="isBondAndNominating"></b-spinner
         >{{ $t("cs.confirm") }}
       </button>
     </div>
@@ -42,7 +42,7 @@ export default {
       inputAmount: "",
       inputNonimator: "",
       paraTokenSymbol: "",
-      isComtribution: false,
+      isBondAndNominating: false,
     };
   },
   props: {
@@ -63,8 +63,8 @@ export default {
   },
   methods: {
     hide() {
-      if (this.isComtribution) return;
-      this.$emit("hideContribute");
+      if (this.isBondAndNominating) return;
+      this.$emit("hideBondAndNominate");
     },
     checkInput() {
       const reg = /^\d+(\.\d+)?$/;
@@ -104,7 +104,8 @@ export default {
         return;
       }
       try {
-        bondAndNominate(
+        this.isBondAndNominating = true
+        await bondAndNominate(
           this.inputAmount,
           Test_Validators,
           this.communityId,
@@ -113,7 +114,7 @@ export default {
             this.$bvToast.toast(info, param);
           },
           () => {
-            this.$emit("hideContribute");
+            this.$emit("hideBondAndNominate");
           }
         );
       } catch (e) {
@@ -124,6 +125,7 @@ export default {
           variant: "danger",
         });
       } finally {
+        this.isBondAndNominating = false
       }
     },
   },

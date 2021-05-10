@@ -59,6 +59,7 @@ module.exports = {
         bondInfo1: "请保留少量资金用于后续操作手续费",
         bondInfo2: "建议至少绑定 1 DOT",
         bondInfo3: "解绑操作后需要等待28天",
-        confirm: "确定"
+        confirm: "确定",
+        cancelValidorsInfo:"请取消 {n} 个您已经投票过的节点，再进行本次投票"
     }
 }

@@ -61,7 +61,7 @@ export const subNominators = async () => {
   const api = await getApi()
   const nominators = await api.query.staking.nominators(store.state.account.address, (nominators) => {
     if (!nominators.toJSON()) {
-      store.commit('saveNominators', null)
+      store.commit('saveNominators', [])
       return;
     }
     store.commit('saveNominators', nominators.toJSON().targets)
@@ -72,24 +72,53 @@ export const subNominators = async () => {
 
 /**
  * 为社区投票, 适用已经有绑定的用户来操作
- * @param {Array} nominators 要投票的节点列表（处理好的所有投票列表）
- * @param {string} communityId 社区id
- * @param {string} projectId 项目id
- */
-export const nominate = async (nominators, communityId, projectId) => {
-
-}
-
-/**
- *  绑定DOT，并为社区投票
- * @param {number} amount 要绑定的DOT数量， 以DOT为单位
- * @param {Array} nominators 要投票的节点列表（处理好的所有投票列表）
+ * @param {Array} validators 要投票的节点列表（处理好的所有投票列表）
  * @param {string} communityId 社区id
  * @param {string} projectId 项目id
  * @param {function} toast toast
  * @param {function} callback callback
  */
-export const bondAndNominate = async (amount, nominators, communityId, projectId, toast, callback) => {
+export const nominate = async (validators, communityId, projectId, toast, callback) => {
+    const from = store.state.account && store.state.account.address
+    communityId = stanfiAddress(communityId)
+    projectId = stanfiAddress(projectId)
+    if (!from) {
+      reject('no account')
+    }
+    const api = await injectAccount(store.state.account)
+    const nominatorTx = api.tx.staking.nominate(validators)
+    const remark = encodeRemark(communityId, projectId)
+    const remarkTx = api.tx.system.remarkWithEvent(remark)
+    const nonce = (await api.query.system.account(from)).nonce.toNumber()
+  
+    const unsub = await api.tx.utility
+      .batch([nominatorTx, remarkTx]).signAndSend(from, {
+        nonce
+      }, ({
+        status,
+        dispatchError
+      }) => {
+        try {
+          handelBlockState(status, dispatchError, toast, callback, unsub)
+        } catch (e) {
+          toast(e.message, {
+            title: $t('tip.error'),
+            variant: 'danger'
+          })
+        }
+      })
+}
+
+/**
+ *  绑定DOT，并为社区投票
+ * @param {number} amount 要绑定的DOT数量， 以DOT为单位
+ * @param {Array} validators 要投票的节点列表（处理好的所有投票列表）
+ * @param {string} communityId 社区id
+ * @param {string} projectId 项目id
+ * @param {function} toast toast
+ * @param {function} callback callback
+ */
+export const bondAndNominate = async (amount, validators, communityId, projectId, toast, callback) => {
   const from = store.state.account && store.state.account.address
   communityId = stanfiAddress(communityId)
   projectId = stanfiAddress(projectId)
@@ -102,7 +131,7 @@ export const bondAndNominate = async (amount, nominators, communityId, projectId
     Staked: null
   })
 
-  const nominatorTx = api.tx.staking.nominate(nominators)
+  const nominatorTx = api.tx.staking.nominate(validators)
   const remark = encodeRemark(communityId, projectId)
   const remarkTx = api.tx.system.remarkWithEvent(remark)
   const nonce = (await api.query.system.account(from)).nonce.toNumber()

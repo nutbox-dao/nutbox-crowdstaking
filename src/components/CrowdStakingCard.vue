@@ -4,12 +4,12 @@
       <div class="icons">
         <img
           class="icon1"
-          :src="cardInfo[communityId].icon"
+          :src="cardInfo.icon"
           alt=""
         />
       </div>
       <div class="title-text font20 font-bold">
-        <span>{{ cardInfo[communityId].name }}</span>
+        <span>{{ cardInfo.name }}</span>
       </div>
     </div>
     <div class="h-line"></div>
@@ -39,9 +39,8 @@
       no-close-on-backdrop
     >
       <TipNominator
-        :communityId="communityId"
-        :projectId="projectId"
-        @hideContribute="showNominate = false"
+        :cardInfo="cardInfo"
+        @hideNominate="showNominate = false"
       />
     </b-modal>
 
@@ -54,9 +53,9 @@
       no-close-on-backdrop
     >
       <TipBondAndNominator
-        :communityId="cardInfo[communityId].communityId"
+        :communityId="cardInfo.communityId"
         :projectId="projectId"
-        @hideContribute="showBondAndNominator = false"
+        @hideBondAndNominate="showBondAndNominator = false"
       />
     </b-modal>
   </div>
@@ -75,7 +74,6 @@ export default {
       showBondAndNominator: false,
       tokenSymbol: TOKEN_SYMBOL,
       status: PARA_STATUS.COMPLETED,
-      cardInfo: Test_Crowdstaking_Data
     };
   },
   props: {
@@ -92,7 +90,6 @@ export default {
   },
   methods: {
     async nominate() {
-      console.log(this.bonded , this.nominators);
       if (this.bonded && this.nominators.length > 0){
         this.showNominate = true
       }else {
@@ -102,8 +99,9 @@ export default {
   },
   computed: {
     ...mapState(["isConnected", "lang", 'bonded', 'nominators']),
-    completion() {
-    },
+    cardInfo(){
+      return Test_Crowdstaking_Data[this.communityId]
+    }
   },
   mounted() {
   },

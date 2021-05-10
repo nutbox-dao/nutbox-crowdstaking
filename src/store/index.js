@@ -16,7 +16,7 @@ export default new Vuex.Store({
     subNominators: {},
     subBonded: {},
     bonded: '',
-    nominators: '',
+    nominators: [],
     communitys: [],
     isConnected: true,
     loadingStaking: true,
