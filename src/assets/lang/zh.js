@@ -54,6 +54,9 @@ module.exports = {
         available: "可绑定资金",
         bondAndNominate: " 绑定并投票",
         cancel: "取消",
-        bondInfo: "请保留少量资金用于后续操作手续费\n建议至少绑定 1 DOT\n解绑操作后需要等待28天"
+        bondInfo1: "请保留少量资金用于后续操作手续费",
+        bondInfo2: "建议至少绑定 1 DOT",
+        bondInfo3: "解绑操作后需要等待28天",
+        confirm: "确定"
     }
 }

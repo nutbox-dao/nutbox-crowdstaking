@@ -8,10 +8,10 @@
     />
     <div class="tip-contribute">
       <div class="text-center mb-4 font20">
-        {{ $t('cs.bond')}}
+        {{ $t('cs.bondAndNominate')}}
       </div>
       <div class="input-group-box">
-        <div class="label">{{ $t('cs.available')}}: {{ 12 }} DOT</div>
+        <div class="label">{{ $t('cs.available')}}: {{ formatBalance }}</div>
         <div class="flex-between-center">
           <input
             type="number"
@@ -19,8 +19,13 @@
           />
         </div>
       </div>
+      <div class="text-center mb-4 font16">
+        <p class="bondInfo">{{ $t('cs.bondInfo1')}}</p>
+        <p class="bondInfo">{{ $t('cs.bondInfo2')}}</p>
+        <p class="bondInfo">{{ $t('cs.bondInfo3')}}</p>
+      </div>
       <button class="primary-btn" @click="confirm" :disabled="isComtribution">
-        <b-spinner small type="grow" v-show="isComtribution"></b-spinner>{{ $t('cs.bondAndNominate') }}
+        <b-spinner small type="grow" v-show="isComtribution"></b-spinner>{{ $t('cs.confirm') }}
       </button>
     </div>
   </div>
@@ -28,7 +33,7 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { validAddress } from "../../utils/polkadot";
+import { validAddress, formatBalance as fb } from "../../utils/polkadot";
 import BN from "bn.js";
 
 export default {
@@ -51,6 +56,11 @@ export default {
   computed: {
     ...mapState(["symbol", "balance", "lang"]),
     ...mapGetters(["getFundInfo", "decimal"]),
+    formatBalance(){
+      let uni = fb(this.balance)
+      uni = uni.replace('Unit', 'DOT')
+      return uni
+    }
   },
   methods: {
     hide() {
@@ -165,6 +175,10 @@ export default {
     background-position-y: bottom;
     background-position-x: 50%;
   }
+}
+.bondInfo{
+  text-align: left;
+  margin-bottom: 0px;
 }
 .input-group-box {
   margin-bottom: 0.5rem;

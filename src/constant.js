@@ -1,6 +1,8 @@
 
 export const BLOCK_SECOND = 6
 
+export const decimal = 10
+
 export const TIME_PERIOD = {
     MINUTES:60,
     HOUR: 3600,

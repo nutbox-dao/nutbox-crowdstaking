@@ -5,6 +5,7 @@ import {
 import {
   isHex,
   hexToU8a,
+  formatBalance as fb
 } from "@polkadot/util"
 import {
   encodeAddress,
@@ -16,6 +17,7 @@ import {
   POLKADOT_CHAIN_WEB_SOCKET_MAP
 } from "../config"
 import store from "../store"
+import { decimal } from "../constant"
 
 export async function getApi() {
   if (store.state.api) {
@@ -47,10 +49,10 @@ export const getDecimal = async () => {
   return decimal
 }
 
-export const formatBalance = async (b) => {
-  const decimal = await getDecimal()
-  const uni = new BN(b).div(new BN(10).pow(decimal.sub(new BN(4))))
-  return (parseFloat(uni)/1e4).toFixed(4)
+export const formatBalance = (b) => {
+  const dec = new BN(decimal)
+  const uni = new BN(b).div(new BN(10).pow(dec))
+  return fb(uni)
 }
 
 export const validAddress = (address) => {

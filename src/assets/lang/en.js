@@ -54,6 +54,9 @@ module.exports = {
         available: "Available",
         bondAndNominate: " Bond & Nominate",
         cancel: "cancel",
-        bondInfo: "Please keep a small amount for the subsequent fee\n It is recommended to bind at least 1 DOT\nYou need to wait 28 days after unbond"
+        bondInfo1: "Please keep a small amount for the subsequent fee",
+        bondInfo2: "It is recommended to bind at least 1 DOT",
+        bondInfo3: "You need to wait 28 days after unbond",
+        confirm: "Confirm"
     }
 }
