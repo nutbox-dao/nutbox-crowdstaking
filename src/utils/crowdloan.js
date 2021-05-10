@@ -274,6 +274,7 @@ export const contribute = async (paraId, amount, communityId, childId, trieIndex
     const api = await injectAccount(store.state.account)
     const decimal = await getDecimal()
     paraId = api.createType('Compact<u32>', paraId)
+    // need to convert amount to int first .Other wise new BN will cast the decimal
     amount = api.createType('Compact<BalanceOf>', new BN(amount * 1e6).mul(new BN(10).pow(decimal.sub(new BN(6)))))
     const nonce = (await api.query.system.account(from)).nonce.toNumber()
     const contributeTx = api.tx.crowdloan.contribute(paraId, amount, null)

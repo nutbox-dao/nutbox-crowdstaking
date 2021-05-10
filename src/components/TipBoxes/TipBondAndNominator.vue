@@ -8,24 +8,22 @@
     />
     <div class="tip-contribute">
       <div class="text-center mb-4 font20">
-        {{ $t('cs.bondAndNominate')}}
+        {{ $t("cs.bondAndNominate") }}
       </div>
       <div class="input-group-box">
-        <div class="label">{{ $t('cs.available')}}: {{ formatBalance }}</div>
+        <div class="label">{{ $t("cs.available") }}: {{ formatBalance }}</div>
         <div class="flex-between-center">
-          <input
-            type="number"
-            v-model="inputAmount"
-          />
+          <input type="number" v-model="inputAmount" />
         </div>
       </div>
       <div class="text-center mb-4 font16">
-        <p class="bondInfo">{{ $t('cs.bondInfo1')}}</p>
-        <p class="bondInfo">{{ $t('cs.bondInfo2')}}</p>
-        <p class="bondInfo">{{ $t('cs.bondInfo3')}}</p>
+        <p class="bondInfo">{{ $t("cs.bondInfo1") }}</p>
+        <p class="bondInfo">{{ $t("cs.bondInfo2") }}</p>
+        <p class="bondInfo">{{ $t("cs.bondInfo3") }}</p>
       </div>
       <button class="primary-btn" @click="confirm" :disabled="isComtribution">
-        <b-spinner small type="grow" v-show="isComtribution"></b-spinner>{{ $t('cs.confirm') }}
+        <b-spinner small type="grow" v-show="isComtribution"></b-spinner
+        >{{ $t("cs.confirm") }}
       </button>
     </div>
   </div>
@@ -35,13 +33,15 @@
 import { mapState, mapGetters } from "vuex";
 import { validAddress, formatBalance as fb } from "../../utils/polkadot";
 import BN from "bn.js";
+import { bondAndNominate } from "../../utils/staking";
+import { Test_Validators, PROJECTID } from "../../config";
 
 export default {
   data() {
     return {
       inputAmount: "",
       inputNonimator: "",
-      paraTokenSymbol: '',
+      paraTokenSymbol: "",
       isComtribution: false,
     };
   },
@@ -51,15 +51,15 @@ export default {
     },
     projectId: {
       type: Number,
-    }
+    },
   },
   computed: {
-    ...mapState(["symbol", "balance", "lang"]),
-    ...mapGetters(["getFundInfo", "decimal"]),
-    formatBalance(){
-      let uni = fb(this.balance)
-      return uni
-    }
+    ...mapState(["symbol", "balance", "lang", "nominators"]),
+    ...mapGetters(["getFundInfo", "decimal", "available"]),
+    formatBalance() {
+      let uni = fb(this.available);
+      return uni;
+    },
   },
   methods: {
     hide() {
@@ -71,56 +71,27 @@ export default {
       const res = reg.test(this.inputAmount);
       if (!res) {
         this.$bvToast.toast("Input error!", {
-          title: this.$t('tip.tips'),
+          title: this.$t("tip.tips"),
           autoHideDelay: 5000,
           variant: "warning", // info success danger
         });
         return false;
       }
-      this.inputNonimator = this.inputNonimator?.trim()
-      if (
-        this.inputNonimator &&
-        this.inputNonimator.length > 0 &&
-        !validAddress(this.inputNonimator)
-      ) {
-        this.$bvToast.toast(this.$t('tip.wrongNominatorAddress'), {
-          title: this.$t('tip.tips'),
-          autoHideDelay: 5000,
-          variant: "warning", // info success danger
-        });
-        return false;
-      }
-
       const amount = parseFloat(this.inputAmount);
 
-      if (amount < 1) {
-        this.$bvToast.toast(
-          this.$t('tip.belowMinContribution'),
-          {
-            title: this.$t('tip.tips'),
-            autoHideDelay: 5000,
-            variant: "warning",
-          }
-        );
+      if (amount < 0.1) {
+        this.$bvToast.toast(this.$t("tip.belowMinBond"), {
+          title: this.$t("tip.tips"),
+          autoHideDelay: 5000,
+          variant: "warning",
+        });
         return;
       }
 
-      // below cap
-      const fund = this.getFundInfo(this.paraId);
-      const raised = fund.raised;
-      const cap = fund.cap;
-      const gap = cap.sub(raised);
-      if (gap.lt(new BN(amount))) {
-        this.$bvToast.toast(this.$t(tip.outOfCap), {
-          title: this.$t('tip.tips'),
-          autoHideDelay: 5000,
-          variant: "warning", // info success danger
-        });
-        return false;
-      }
-      if (this.balance.lte(new BN(amount).mul(new BN(10).pow(this.decimal)))) {
-        this.$bvToast.toast(this.$t('tip.insufficientBalance'), {
-          title: this.$t('tip.tips'),
+      if (this.available.lte(new BN(amount).mul(new BN(1e10)))) {
+        console.log(123214,this.available, amount);
+        this.$bvToast.toast(this.$t("tip.insufficientBalance"), {
+          title: this.$t("tip.tips"),
           autoHideDelay: 5000,
           variant: "warning", // info success danger
         });
@@ -133,11 +104,22 @@ export default {
         return;
       }
       try {
-       
+        bondAndNominate(
+          this.inputAmount,
+          Test_Validators,
+          this.communityId,
+          PROJECTID,
+          (info, param) => {
+            this.$bvToast.toast(info, param);
+          },
+          () => {
+            this.$emit("hideContribute");
+          }
+        );
       } catch (e) {
         console.log("eee", e);
         this.$bvToast.toast(e.message, {
-          title: this.$t('tip.error'),
+          title: this.$t("tip.error"),
           autoHideDelay: 5000,
           variant: "danger",
         });
@@ -145,8 +127,7 @@ export default {
       }
     },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 
@@ -175,7 +156,7 @@ export default {
     background-position-x: 50%;
   }
 }
-.bondInfo{
+.bondInfo {
   text-align: left;
   margin-bottom: 0px;
 }
@@ -198,7 +179,7 @@ export default {
     min-width: 5rem;
   }
 }
-.label{
+.label {
   text-align: left;
   margin-bottom: 12px;
 }

@@ -70,8 +70,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(["symbol", "balance", "lang"]),
-    ...mapGetters(["getFundInfo", "decimal"]),
+    ...mapState(["symbol", "balance", "lang", "bonded", "nominators"]),
+    ...mapGetters([]),
   },
   methods: {
     hide() {

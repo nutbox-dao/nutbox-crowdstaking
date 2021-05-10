@@ -10,6 +10,7 @@ import {
 } from "@polkadot/util-crypto"
 import BN from "bn.js"
 import store from "../store"
+import { subBonded, subNominators } from './staking'
 
 import { getApi, uni2Token, getDecimal } from './polkadot'
 
@@ -26,6 +27,8 @@ export const loadAccounts = async () => {
     let account = store.state.account || allAccounts[0]
     store.commit('saveAccount', account)
     getBalance(account)
+    subNominators()
+    subBonded()
     // inject
     await injectAccount(account)
   } catch (e) {
@@ -44,8 +47,12 @@ export const getBalance = async (account) => {
   const api = await getApi()
   // cancel last
   let subBalance = store.state.subBalance
+  let subLocked = store.state.subLocked
   try {
     subBalance()
+  } catch (e) {}
+  try {
+    subLocked()
   } catch (e) {}
 
   subBalance = await api.query.system.account(store.state.account.address, ({
@@ -56,5 +63,16 @@ export const getBalance = async (account) => {
   }) => {
     store.commit('saveBalance', new BN(currentFree))
   })
+
+  subLocked = await api.query.balances.locks(store.state.account.address, (locked) => {
+    if (!locked.toJSON() || locked.toJSON().length === 0){
+      store.commit('saveLocked', new BN(0))
+      return
+    }
+    store. commit('saveLocked', new BN(locked[0].amount))
+    console.log('lock', locked[0].amount.toHuman());
+  })
+
+  store. commit('saveSubLocked', subLocked)
   store.commit('saveSubBalance', subBalance)
 }

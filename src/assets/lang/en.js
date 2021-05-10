@@ -31,6 +31,7 @@ module.exports = {
         noAuction : "No ongoing auction",
         tokenSafeTip: "Your asset would be locked into {symbol} official crowdloan pallet directly, not any accounts of Nutobx.",
         belowMinContribution:"Input is less than the minimum allowed contribution of 1.0000",
+        belowMinBond: "Input is less than the minimum surggest bonded of 0.1",
         wrongNominatorAddress: "Wrong Nominator Address",
         insufficientBalance:"Insufficient Balance",
         outOfCap: "Out of cap",
@@ -44,7 +45,8 @@ module.exports = {
         broadcasting: "Transaction Is Broadcasting.",
         inBlock: "Transaction included at blockHash.",
         contributeOk: "Contribution Success!",
-        withdrawOk: "Withdraw Success!"
+        withdrawOk: "Withdraw Success!",
+        nominateOk: "Nominate Success!"
     },
     cs: {
         nominate: "Nominate",

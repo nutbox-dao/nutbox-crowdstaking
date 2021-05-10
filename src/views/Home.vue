@@ -34,7 +34,7 @@ import { mapMutations, mapState, mapGetters } from "vuex";
 import TipContribute from "../components/TipBoxes/TipContribute";
 import TipWithdraw from "../components/TipBoxes/TipWithdraw";
 import { getOnshowingCrowdloanCard } from "../apis/api"
-import { Test_Crowdstaking_Data } from '../constant'
+import { Test_Crowdstaking_Data } from '../config'
 
 export default {
   name: "Home",

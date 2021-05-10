@@ -54,7 +54,7 @@
       no-close-on-backdrop
     >
       <TipBondAndNominator
-        :communityId="communityId"
+        :communityId="cardInfo[communityId].communityId"
         :projectId="projectId"
         @hideContribute="showBondAndNominator = false"
       />
@@ -65,9 +65,8 @@
 <script>
 import TipBondAndNominator from './TipBoxes/TipBondAndNominator'
 import TipNominator from './TipBoxes/TipNominator'
-import { mapState, mapGetters } from "vuex";
-import { TOKEN_SYMBOL, PARA_STATUS, LOCALE_KEY } from "../config";
-import { Test_Crowdstaking_Data } from "../constant";
+import { mapState } from "vuex";
+import { TOKEN_SYMBOL, PARA_STATUS, LOCALE_KEY, Test_Crowdstaking_Data } from "../config";
 
 export default {
   data() {
@@ -88,30 +87,21 @@ export default {
     },
   },
   components: {
-    ...mapState(['bonded']),
     TipBondAndNominator,
     TipNominator
   },
   methods: {
     async nominate() {
-      if (this.bonded){
+      console.log(this.bonded , this.nominators);
+      if (this.bonded && this.nominators.length > 0){
         this.showNominate = true
       }else {
         this.showBondAndNominator = true
       }
     }
   },
-  watch: {
-    async currentBlockNum(newValue, _) {
-    },
-  },
   computed: {
-    ...mapState(["isConnected", "symbol", "projectFundInfos", "lang", 'currentBlockNum']),
-    ...mapGetters([
-      "getProjectStatus",
-      "getFundInfo",
-      "getCardInfo",
-    ]),
+    ...mapState(["isConnected", "lang", 'bonded', 'nominators']),
     completion() {
     },
   },

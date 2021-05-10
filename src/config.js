@@ -37,3 +37,25 @@ export const CHAIN_NAME = {
   KUSAMA: "Kusama",
   ROCOCO: "Rococo"
 }
+
+
+export const Test_Crowdstaking_Data = [
+  {
+      id: '0',
+      name: 'BML',
+      icon: 'https://cdn.wherein.mobi/crowdloan/logo/bml.png',
+      communityId: '5ChZmLcNRWAbvM38BKgnFPjF6uUbWWr5FKFyBBjPtsb6F4jF'
+  },
+  {
+      id: '1',
+      name: 'Peanut',
+      icon: 'https://cdn.wherein.mobi/nutbox.png',
+      communityId: '5HTQu2DE1CHeXvM492H4Xh1NpRuVzBnVfR47gxS1bUS5HTTW'
+  }
+]
+
+export const Test_Validators = [
+  '1RJP5i7zuyBLtgGTMCD9oF8zQMTQvfc4zpKNsVxfvTKdHmr'
+]
+
+export const PROJECTID = "5ChZmLcNRWAbvM38BKgnFPjF6uUbWWr5FKFyBBjPtsb6F4jF"

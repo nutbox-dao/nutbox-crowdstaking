@@ -12,7 +12,8 @@ export default new Vuex.Store({
     apiState: null,
     lang: Cookie.get(LOCALE_KEY),
     subBalance: {},
-    subNominator: {},
+    subLocked: {},
+    subNominators: {},
     subBonded: {},
     bonded: '',
     nominators: '',
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     account: Cookie.get('polkadot-account'),
     allAccounts: [],
     balance: 0,
+    locked: 0,
     projectFundInfos: [],
     currentBlockNum: {},
   },
@@ -32,8 +34,11 @@ export default new Vuex.Store({
     saveSubBalance: (state, subBalance) => {
       state.subBalance = subBalance
     },
-    saveSubNominators: (stable, subNominator) => {
-      state.subNominator = subNominator
+    saveSubLocked: (state, subLocked) => {
+      state.subLocked = subLocked
+    },
+    saveSubNominators: (state, subNominators) => {
+      state.subNominators = subNominators
     },
     saveSubBonded: (state, subBonded) => {
       state.subBonded = subBonded
@@ -70,11 +75,22 @@ export default new Vuex.Store({
     saveBalance: (state, balance) => {
       state.balance = balance
     },
+    saveLocked: (state, locked) => {
+      state.locked = locked
+    },
     saveCurrentBlockNum: (state, blockNum) => {
       state.currentBlockNum = blockNum
     },
   },
-  getters: {},
+  getters: {
+    available: (state) => {
+      if (state.balance && state.locked){
+        return state.balance.sub(state.locked)
+      }else{
+        return 0
+      }
+    }
+  },
   actions: {},
   modules: {}
 })
