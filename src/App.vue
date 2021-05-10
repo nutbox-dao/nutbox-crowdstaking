@@ -124,6 +124,7 @@ import Identicon from '@polkadot/vue-identicon'
 import { getBalance, loadAccounts } from './utils/account'
 import { getCommnunitys } from './apis/api'
 import { subBlock } from "./utils/block"
+import { subBonded, subNominators } from "./utils/staking"
 
 export default {
   name: 'App',
@@ -256,6 +257,8 @@ export default {
     changeAccount (acc) {
       this.saveAccount(acc)
       getBalance(acc)
+      subBonded()
+      subNominators()
     }
   }
 }

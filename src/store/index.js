@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import Cookie from "vue-cookies"
 import { LOCALE_KEY } from '../config'
+import { subBonded } from '../utils/staking'
 
 Vue.use(Vuex)
 
@@ -11,6 +12,8 @@ export default new Vuex.Store({
     apiState: null,
     lang: Cookie.get(LOCALE_KEY),
     subBalance: {},
+    subNominator: {},
+    subBonded: {},
     bonded: '',
     nominators: '',
     communitys: [],
@@ -28,6 +31,12 @@ export default new Vuex.Store({
     },
     saveSubBalance: (state, subBalance) => {
       state.subBalance = subBalance
+    },
+    saveSubNominators: (stable, subNominator) => {
+      state.subNominator = subNominator
+    },
+    saveSubBonded: (state, subBonded) => {
+      state.subBonded = subBonded
     },
     saveLang: (state, lang) => {
       state.lang = lang;

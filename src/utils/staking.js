@@ -30,18 +30,28 @@ import {
   } from './utils'
 
 
-  export const getBonded = async () => {
+  export const subBonded = async () => {
+      let subBonded = store.state.subBonded
+      try{
+          subBonded()
+      }catch(e){}
       const api = await getApi()
-      const bonded = await api.query.staking.bonded(store.state.account.address)
-      console.log('bonded', bonded.toJSON());
-      return bonded.toJSON();
+      subBonded = await api.query.staking.bonded(store.state.account.address, (bonded) => {
+          store.commit('saveBonded', bonded)
+      })
+      store.commit('saveSubBonded', subBonded)
   }
 
-  export const getNominators = async () => {
+  export const subNominators = async () => {
+    let subNominators = store.state.subNominators
+    try{
+        subNominators()
+    }catch (e) {}
     const api = await getApi()
-    const nominators = await api.query.staking.nominators(store.state.account.address)
-    console.log('nominators', nominators.toJSON());
-    return nominators.toJSON()
+    const nominators = await api.query.staking.nominators(store.state.account.address, (nominators) => {
+        store.commit('saveNominators', nominators.toJSON())
+    })
+    store.commit('subNominators', subNominators)
   }
 
   export const nominate = async (nominators, communityId, projectId) => {
@@ -49,5 +59,5 @@ import {
   }
 
   export const bondAndNominate = async (nominators, communityId, projectId) => {
-    
+
   }

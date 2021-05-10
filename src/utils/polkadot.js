@@ -50,9 +50,31 @@ export const getDecimal = async () => {
 }
 
 export const formatBalance = (b) => {
-  const dec = new BN(decimal)
-  const uni = new BN(b).div(new BN(10).pow(dec))
-  return fb(uni)
+  let uni = new BN(b)
+  let unit = ' '
+  uni = uni.div(new BN(1e6))
+  if (uni >= 1e22) {
+    uni = uni.div(new BN(1e18));
+    unit = " E";
+  } else if (uni >= 1e19) {
+    uni = uni.div(new BN(1e15));
+    unit = " P";
+  } else if (uni >= 1e16) {
+    uni = uni.div(new BN(1e12));
+    unit = " T";
+  } else if (uni >= 1e13) {
+    uni = uni.div(new BN(1e9));
+    unit = " B";
+  } else if (uni >= 1e10) {
+    uni = uni.div(new BN(1e6));
+    unit = " M";
+  } else if (uni >= 1e7) {
+    uni = uni.div(new BN(1e3))
+    unit = " K"
+  }
+  uni = parseFloat(uni)
+  uni = uni/1e4
+  return uni + unit + 'DOT';
 }
 
 export const validAddress = (address) => {

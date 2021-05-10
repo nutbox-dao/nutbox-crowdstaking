@@ -68,7 +68,6 @@ import TipNominator from './TipBoxes/TipNominator'
 import { mapState, mapGetters } from "vuex";
 import { TOKEN_SYMBOL, PARA_STATUS, LOCALE_KEY } from "../config";
 import { Test_Crowdstaking_Data } from "../constant";
-import { getBonded, getNominators } from "../utils/staking"
 
 export default {
   data() {
@@ -89,13 +88,13 @@ export default {
     },
   },
   components: {
+    ...mapState(['bonded']),
     TipBondAndNominator,
     TipNominator
   },
   methods: {
     async nominate() {
-      const bonded = await getBonded()
-      if (bonded){
+      if (this.bonded){
         this.showNominate = true
       }else {
         this.showBondAndNominator = true

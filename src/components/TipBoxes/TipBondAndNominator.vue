@@ -58,7 +58,6 @@ export default {
     ...mapGetters(["getFundInfo", "decimal"]),
     formatBalance(){
       let uni = fb(this.balance)
-      uni = uni.replace('Unit', 'DOT')
       return uni
     }
   },
