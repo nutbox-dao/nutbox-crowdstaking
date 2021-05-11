@@ -125,6 +125,7 @@ import { getBalance, loadAccounts } from './utils/account'
 import { getCommnunitys } from './apis/api'
 import { subBlock } from "./utils/block"
 import { subBonded, subNominators } from "./utils/staking"
+import { stanfiAddress } from "./utils/polkadot"
 
 export default {
   name: 'App',
@@ -198,7 +199,10 @@ export default {
     this.$i18n.locale = this.lang;
     getCommnunitys().then(res => {
       console.log('commnituy', res);
-      this.$store.commit('saveCommunitys', res)
+      this.$store.commit('saveCommunitys', res.map(r => ({
+        ...r,
+        communityId: stanfiAddress(r.communityId)
+      })))
     })
     this.setActiveMenu()
     loadAccounts()

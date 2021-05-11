@@ -60,6 +60,6 @@ module.exports = {
         bondInfo2: "建议至少绑定 1 DOT",
         bondInfo3: "解绑操作后需要等待28天",
         confirm: "确定",
-        cancelValidorsInfo:"请取消 {n} 个您已经投票过的节点，再进行本次投票"
+        cancelValidorsInfo:"请取消至少 {n} 个您已经投票过的节点，再进行本次投票"
     }
 }

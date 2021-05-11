@@ -62,6 +62,9 @@ export const subNominators = async () => {
     subNominators()
   } catch (e) {}
   const api = await getApi()
+  const {validators} = await api.derive.staking.overview()
+  console.log('validators', validators.slice(0,10))
+
   const nominators = await api.query.staking.nominators(store.state.account.address, async (nominators) => {
     if (!nominators.toJSON()) {
       store.commit('saveNominators', [])

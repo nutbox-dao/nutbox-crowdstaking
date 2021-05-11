@@ -44,13 +44,13 @@ export const Test_Crowdstaking_Data = [
       id: '0',
       name: 'BML',
       icon: 'https://cdn.wherein.mobi/crowdloan/logo/bml.png',
-      communityId: '5ChZmLcNRWAbvM38BKgnFPjF6uUbWWr5FKFyBBjPtsb6F4jF'
+      communityId: '1drufsSHHS5Mt3e8xjnPYZPxXUFCpQDKozTLUikSxccRdZY'
   },
   {
       id: '1',
       name: 'Peanut',
       icon: 'https://cdn.wherein.mobi/nutbox.png',
-      communityId: '5HTQu2DE1CHeXvM492H4Xh1NpRuVzBnVfR47gxS1bUS5HTTW'
+      communityId: '16Pi3MUHryZ7yTMa6fL4fqqXg3u9gVLdjunbrFRN9ZTbTweG'
   }
 ]
 
@@ -60,4 +60,4 @@ export const Test_Validators = [
   '1gpCRov55rqmNaoEVRNAUCCYVzSGghitLNabng8UHVGwv1g'
 ]
 
-export const PROJECTID = "5ChZmLcNRWAbvM38BKgnFPjF6uUbWWr5FKFyBBjPtsb6F4jF"
+export const PROJECTID = "1drufsSHHS5Mt3e8xjnPYZPxXUFCpQDKozTLUikSxccRdZY"

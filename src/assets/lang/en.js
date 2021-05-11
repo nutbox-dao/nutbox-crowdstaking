@@ -60,6 +60,6 @@ module.exports = {
         bondInfo2: "It is recommended to bind at least 1 DOT",
         bondInfo3: "You need to wait 28 days after unbond",
         confirm: "Confirm",
-        cancelValidorsInfo:"Please cancel {n} validators before this nominate operation"
+        cancelValidorsInfo:"Please cancel at least {n} validators before this nominate operation"
     }
 }

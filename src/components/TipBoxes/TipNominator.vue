@@ -17,11 +17,33 @@
       </div>
 
       <div v-if="needToCancelValidators > 0">
-        <p style="text-align:center">{{ $t("cs.cancelValidorsInfo", { n: needToCancelValidators }) }}</p>
-        
+        <p style="text-align: center">
+          {{ $t("cs.cancelValidorsInfo", { n: needToCancelValidators }) }}
+        </p>
+        <b-form-checkbox-group
+          id="checkbox-group-2"
+          v-model="selected"
+          name="flavour-2"
+        >
+          <div v-for="item of availableNominators" :key="item.address">
+            <b-form-checkbox class="checkbox-item" :value="item.address">
+              <Identicon
+                class="ident-icon"
+                :size="30"
+                theme="polkadot"
+                :value="item.address"
+              />
+              <span>{{ item.address }}</span>
+            </b-form-checkbox>
+          </div>
+        </b-form-checkbox-group>
       </div>
 
-      <button class="primary-btn" @click="confirm" :disabled="isNominating">
+      <button
+        class="primary-btn"
+        @click="confirm"
+        :disabled="isNominating || !canNominate"
+      >
         <b-spinner small type="grow" v-show="isNominating"></b-spinner
         >{{ $t("cs.confirm") }}
       </button>
@@ -33,11 +55,13 @@
 import { mapState } from "vuex";
 import { Test_Validators, PROJECTID } from "../../config";
 import { nominate } from "../../utils/staking";
-import { MAX_NOMINATE_VALIDATOR } from "../../constant"
+import { MAX_NOMINATE_VALIDATOR } from "../../constant";
+import Identicon from "@polkadot/vue-identicon";
 
 export default {
   data() {
     return {
+      selected: [],
       inputAmount: "",
       inputNonimator: "",
       paraTokenSymbol: "",
@@ -49,13 +73,28 @@ export default {
       type: Object,
     },
   },
+  components: {
+    Identicon,
+  },
   computed: {
     ...mapState(["symbol", "balance", "lang", "bonded", "nominators"]),
     availableNominators() {
       return this.nominators.filter((n) => Test_Validators.indexOf(n) === -1);
     },
     needToCancelValidators() {
-      return this.availableNominators.length + Test_Validators.length - MAX_NOMINATE_VALIDATOR;
+      return (
+        this.availableNominators.length +
+        Test_Validators.length -
+        MAX_NOMINATE_VALIDATOR
+      );
+    },
+    // 确认按钮是否可点击
+    canNominate() {
+      if (this.needToCancelValidators) {
+        return this.selected.length >= this.needToCancelValidators;
+      } else {
+        return true;
+      }
     },
   },
   methods: {
@@ -66,20 +105,33 @@ export default {
     getNominateValidators() {
       if (this.needToCancelValidators > 0) {
         // 从用户选择的列表获取投票
+        return this.availableNominators
+          .filter((n) => this.selected.indexOf(n.address) !== -1)
+          .map(({ address }) => address)
+          .concat(Test_Validators);
       } else {
         // 直接拼接节点
-        return this.availableNominators.concat(Test_Validators)
+        return this.availableNominators
+          .map(({ address }) => address)
+          .concat(Test_Validators);
       }
     },
     async confirm() {
       try {
-        this.isNominating = true
+        this.isNominating = true;
         const validators = this.getNominateValidators();
-        await nominate(validators, this.cardInfo.communityId, PROJECTID, (info, param) => {
-          this.$bvToast.toast(info, param)
-        },() => {
-          this.$emit('hideNominate')
-        });
+        console.log('selecet validator', validators);
+        await nominate(
+          validators,
+          this.cardInfo.communityId,
+          PROJECTID,
+          (info, param) => {
+            this.$bvToast.toast(info, param);
+          },
+          () => {
+            this.$emit("hideNominate");
+          }
+        );
       } catch (e) {
         console.log("eee", e);
         this.$bvToast.toast(e.message, {
@@ -88,7 +140,7 @@ export default {
           variant: "danger",
         });
       } finally {
-        this.isNominating = false
+        this.isNominating = false;
       }
     },
   },
@@ -119,6 +171,18 @@ export default {
     background-repeat: no-repeat;
     background-position-y: bottom;
     background-position-x: 50%;
+  }
+}
+.checkbox-item {
+  margin-bottom: 10px;
+  margin-left: 1.2rem;
+
+  .custom-control-label {
+    display: flex;
+    align-content: flex-start;
+    span {
+      margin-left: 12px;
+    }
   }
 }
 .input-group-box {

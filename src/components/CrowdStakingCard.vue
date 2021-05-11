@@ -11,9 +11,9 @@
       <div class="title-text font20 font-bold">
         <span>{{ cardInfo.name }}</span>
       </div>
+
     </div>
     <div class="h-line"></div>
-    
     <div v-if="isConnected">
       <button
         class="primary-btn"
@@ -111,6 +111,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.cardInfo.name, stanfiAddress(this.cardInfo.communityId));
   },
 };
 </script>
