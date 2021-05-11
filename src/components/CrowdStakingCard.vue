@@ -13,13 +13,14 @@
       </div>
     </div>
     <div class="h-line"></div>
-   
+    
     <div v-if="isConnected">
       <button
         class="primary-btn"
         @click="nominate"
+        :disabled="nominated"
       >
-        {{ $t('cs.nominate') }}
+        {{ nominated ? $t('cs.nominated') : $t('cs.nominate') }}
       </button>
       <!-- <button
         class="primary-btn"
@@ -65,7 +66,8 @@
 import TipBondAndNominator from './TipBoxes/TipBondAndNominator'
 import TipNominator from './TipBoxes/TipNominator'
 import { mapState } from "vuex";
-import { TOKEN_SYMBOL, PARA_STATUS, LOCALE_KEY, Test_Crowdstaking_Data } from "../config";
+import { TOKEN_SYMBOL, PARA_STATUS, Test_Validators, Test_Crowdstaking_Data } from "../config";
+import { stanfiAddress } from "../utils/polkadot"
 
 export default {
   data() {
@@ -90,7 +92,7 @@ export default {
   },
   methods: {
     async nominate() {
-      if (this.bonded && this.nominators.length > 0){
+      if (this.bonded){
         this.showNominate = true
       }else {
         this.showBondAndNominator = true
@@ -101,6 +103,11 @@ export default {
     ...mapState(["isConnected", "lang", 'bonded', 'nominators']),
     cardInfo(){
       return Test_Crowdstaking_Data[this.communityId]
+    },
+    // 用户已经投了该项目的节点
+    nominated(){
+      const val = Test_Validators.map(tcd => stanfiAddress(tcd))
+      return this.nominators.filter(({address}) => val.indexOf(address) !== -1).length === val.length
     }
   },
   mounted() {

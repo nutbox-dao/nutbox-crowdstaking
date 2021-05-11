@@ -12,7 +12,7 @@ import BN from "bn.js"
 import store from "../store"
 import { subBonded, subNominators } from './staking'
 
-import { getApi, uni2Token, getDecimal } from './polkadot'
+import { getApi, stanfiAddress } from './polkadot'
 
 export const loadAccounts = async () => {
   try {
@@ -20,11 +20,16 @@ export const loadAccounts = async () => {
     let allAccounts = await web3Accounts()
     await cryptoWaitReady();
     keyring.loadAll({
-      isDevelopment: true
+      isDevelopment: false
     }, allAccounts)
     console.log('accs:', allAccounts);
+    allAccounts = allAccounts.map(({address, meta}) => ({
+      address: stanfiAddress(address),
+      meta
+    }))
     store.commit('saveAllAccounts', allAccounts)
     let account = store.state.account || allAccounts[0]
+    const api = await getApi()
     store.commit('saveAccount', account)
     getBalance(account)
     subNominators()

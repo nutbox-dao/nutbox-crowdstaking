@@ -55,7 +55,9 @@ export const Test_Crowdstaking_Data = [
 ]
 
 export const Test_Validators = [
-  '1RJP5i7zuyBLtgGTMCD9oF8zQMTQvfc4zpKNsVxfvTKdHmr'
+  '1RJP5i7zuyBLtgGTMCD9oF8zQMTQvfc4zpKNsVxfvTKdHmr',
+  '1dGsgLgFez7gt5WjX2FYzNCJtaCjGG6W9dA42d9cHngDYGg',
+  '1gpCRov55rqmNaoEVRNAUCCYVzSGghitLNabng8UHVGwv1g'
 ]
 
 export const PROJECTID = "5ChZmLcNRWAbvM38BKgnFPjF6uUbWWr5FKFyBBjPtsb6F4jF"

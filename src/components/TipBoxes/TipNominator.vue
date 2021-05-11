@@ -17,7 +17,8 @@
       </div>
 
       <div v-if="needToCancelValidators > 0">
-        <p>{{ $t("cs.cancelValidorsInfo", { n: needToCancelValidators }) }}</p>
+        <p style="text-align:center">{{ $t("cs.cancelValidorsInfo", { n: needToCancelValidators }) }}</p>
+        
       </div>
 
       <button class="primary-btn" @click="confirm" :disabled="isNominating">
@@ -32,6 +33,7 @@
 import { mapState } from "vuex";
 import { Test_Validators, PROJECTID } from "../../config";
 import { nominate } from "../../utils/staking";
+import { MAX_NOMINATE_VALIDATOR } from "../../constant"
 
 export default {
   data() {
@@ -53,7 +55,7 @@ export default {
       return this.nominators.filter((n) => Test_Validators.indexOf(n) === -1);
     },
     needToCancelValidators() {
-      return this.availableNominators.length + Test_Validators.length - 16;
+      return this.availableNominators.length + Test_Validators.length - MAX_NOMINATE_VALIDATOR;
     },
   },
   methods: {
@@ -63,8 +65,10 @@ export default {
     },
     getNominateValidators() {
       if (this.needToCancelValidators > 0) {
+        // 从用户选择的列表获取投票
       } else {
-        
+        // 直接拼接节点
+        return this.availableNominators.concat(Test_Validators)
       }
     },
     async confirm() {

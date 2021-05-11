@@ -18,14 +18,5 @@ export const API_CONNECT_STATE = {
     CONNECT_ERROR:'CONNECT_ERROR'
 }
 
-export const BID_PERIOD = {
-    POKALDOT: 60 * 60 / BLOCK_SECOND,
-    KUSAMA: 60 * 60 / BLOCK_SECOND,
-    ROCOCO: 60 * 60 / BLOCK_SECOND
-}
-
-export const RETIRING_PERIOD = {
-    POKALDOT: 60 * 60,
-    KUSAMA: 60 * 60,
-    ROCOCO: 60 * 60
-}
+// 最大投票数
+export const MAX_NOMINATE_VALIDATOR = 5

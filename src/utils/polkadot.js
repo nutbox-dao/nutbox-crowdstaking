@@ -107,7 +107,7 @@ export const stanfiAddress = (address) => {
       isHex(address) ?
       hexToU8a(address) :
       decodeAddress(address),
-      42
+      0
     );
   } catch (e) {
     return false

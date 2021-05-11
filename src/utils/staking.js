@@ -1,6 +1,9 @@
 import {
   u8aConcat,
   u8aToHex,
+  hexToU8a,
+  stringToHex,
+  hexToString
 } from "@polkadot/util"
 import {
   blake2AsU8a,
@@ -51,7 +54,7 @@ export const subBonded = async () => {
 }
 
 /**
- * 监听用户的投票人数
+ * 监听用户的投票节点
  */
 export const subNominators = async () => {
   let subNominators = store.state.subNominators
@@ -59,17 +62,34 @@ export const subNominators = async () => {
     subNominators()
   } catch (e) {}
   const api = await getApi()
-  const nominators = await api.query.staking.nominators(store.state.account.address, (nominators) => {
+  const nominators = await api.query.staking.nominators(store.state.account.address, async (nominators) => {
     if (!nominators.toJSON()) {
       store.commit('saveNominators', [])
       return;
     }
-    store.commit('saveNominators', nominators.toJSON().targets)
+    store.commit('saveNominators', nominators.toJSON().targets.map(address => ({address})))
     console.log('nominatores', nominators.toJSON().targets);
+    const infos = await Promise.all(nominators.toJSON().targets.map(v => api.derive.accounts.info(v)))
+    store.commit('saveNominators',infos.map(acc => {
+      let nick = ''
+      let address = stanfiAddress(acc.accountId)
+      if (acc.identity?.displayParent){
+        if (acc.identity?.display){
+          nick = acc.identity.displayParent + '/' + acc.identity.display
+        }else{
+          nick = acc.identity.displayParent
+        }
+      }else{
+        nick = `${address.slice(0,8)}...${address.slice(-6)}`
+      }
+      return {
+        address: stanfiAddress(acc.accountId),
+        nick
+      }
+    }))
   })
   store.commit('saveSubNominators', subNominators)
 }
-
 /**
  * 为社区投票, 适用已经有绑定的用户来操作
  * @param {Array} validators 要投票的节点列表（处理好的所有投票列表）
@@ -88,6 +108,7 @@ export const nominate = async (validators, communityId, projectId, toast, callba
     const api = await injectAccount(store.state.account)
     const nominatorTx = api.tx.staking.nominate(validators)
     const remark = encodeRemark(communityId, projectId)
+    console.log('remark', remark, encodeAddress(hexToU8a(remark).slice(1,33), 0));
     const remarkTx = api.tx.system.remarkWithEvent(remark)
     const nonce = (await api.query.system.account(from)).nonce.toNumber()
   
@@ -133,6 +154,7 @@ export const bondAndNominate = async (amount, validators, communityId, projectId
 
   const nominatorTx = api.tx.staking.nominate(validators)
   const remark = encodeRemark(communityId, projectId)
+  console.log('remark', remark);
   const remarkTx = api.tx.system.remarkWithEvent(remark)
   const nonce = (await api.query.system.account(from)).nonce.toNumber()
 
@@ -224,5 +246,9 @@ function handelBlockState(status, dispatchError, toast, callback, unsub) {
 
 export function encodeRemark(communityId, projectId) {
   // 01 表示使用dot投票
-  return "0x01" + communityId + projectId;
+  let buf = new Uint8Array(65)
+  buf[0] = 1;
+  buf.set(decodeAddress(communityId), 1);
+  buf.set(decodeAddress(projectId), 33)
+  return '0x' + Buffer.from(buf).toString('hex')
 }
