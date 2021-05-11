@@ -1,6 +1,6 @@
 <template>
   <div class="k-page crowdloan-page">
-    <div class="loading-bg" v-if="loadingStaking">
+    <div class="loading-bg" v-if="!isConnected">
       <img src="~@/static/images/loading.gif" alt="" />
       <p class="font16">{{ $t('tip.loading') }}</p>
     </div>
@@ -31,8 +31,6 @@ import {
   
 } from "../utils/staking";
 import { mapMutations, mapState, mapGetters } from "vuex";
-import TipContribute from "../components/TipBoxes/TipContribute";
-import TipWithdraw from "../components/TipBoxes/TipWithdraw";
 import { getOnshowingCrowdloanCard } from "../apis/api"
 import { Test_Crowdstaking_Data } from '../config'
 
@@ -45,11 +43,9 @@ export default {
   },
   components: {
     CrowdStakingCard,
-    TipContribute,
-    TipWithdraw,
   },
   computed: {
-    ...mapState(["projectFundInfos", "symbol", "loadingStaking", 'balance']),
+    ...mapState(["projectFundInfos", "symbol", "isConnected", 'balance']),
     funds() {
       const fundInfos = this.getFundInfos();
       return fundInfos || [];
@@ -66,7 +62,6 @@ export default {
   async created() {
     console.log(this.showingCard);
     // const res = await getOnshowingCrowdloanCard({relaychain:this.symbol.toLowerCase()})
-    this.$store.commit('saveLoadingStaking', false)
     // await subscribeFundInfo(res);
   },
 };

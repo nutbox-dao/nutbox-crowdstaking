@@ -56,6 +56,9 @@ export default new Vuex.Store({
     saveApiState: (state, apiState) => {
       state.apiState = apiState
     },
+    saveIsConnected: (state, isConnected) => {
+      state.isConnected = isConnected
+    },
     saveLoadingStaking: (state, loadingStaking) => {
       state.loadingStaking = loadingStaking
     },

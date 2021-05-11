@@ -65,15 +65,18 @@ export const subNominators = async () => {
   const {validators} = await api.derive.staking.overview()
   console.log('validators', validators.slice(0,10))
 
+  store.commit('saveLoadingStaking', true)
+// 获取用户投票的情况
   const nominators = await api.query.staking.nominators(store.state.account.address, async (nominators) => {
     if (!nominators.toJSON()) {
       store.commit('saveNominators', [])
+      store.commit('saveLoadingStaking', false)
       return;
     }
-    store.commit('saveNominators', nominators.toJSON().targets.map(address => ({address})))
     console.log('nominatores', nominators.toJSON().targets);
-    const infos = await Promise.all(nominators.toJSON().targets.map(v => api.derive.accounts.info(v)))
-    store.commit('saveNominators',infos.map(acc => {
+    // 获取节点的昵称
+    let infos = await Promise.all(nominators.toJSON().targets.map(v => api.derive.accounts.info(v)))
+    infos = infos.map(acc => {
       let nick = ''
       let address = stanfiAddress(acc.accountId)
       if (acc.identity?.displayParent){
@@ -89,7 +92,23 @@ export const subNominators = async () => {
         address: stanfiAddress(acc.accountId),
         nick
       }
-    }))
+    })
+    // 获取用户投票的节点的详细信息
+    const currentEra = await api.query.staking.currentEra()
+    for (let i = 0; i<infos.length; i++){
+      const addr = infos[i].address
+      const validatorStake = await api.query.staking.erasStakers(currentEra.toString(), addr)
+      const validatorComissionRate = await api.query.staking.erasValidatorPrefs(currentEra.toString(), addr)
+      const validatorTotalStake = validatorStake['total'].toString() / 1e10
+      const validatorOwnStake = validatorStake['own'].toString() / 1e10
+      const validatorNominators = validatorStake['others'].toJSON()
+      infos[i]['otherStake'] = validatorTotalStake - validatorOwnStake
+      infos[i]['ownStake'] = validatorOwnStake
+      infos[i]['nominatorCount'] = validatorNominators.length
+      infos[i]['commission'] = validatorComissionRate['commission'].toString() / 10000000 + '%'
+    }
+    store.commit('saveLoadingStaking', false)
+    store.commit('saveNominators', infos)
   })
   store.commit('saveSubNominators', subNominators)
 }

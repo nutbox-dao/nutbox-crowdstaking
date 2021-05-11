@@ -17,12 +17,12 @@ import {
   POLKADOT_CHAIN_WEB_SOCKET_MAP
 } from "../config"
 import store from "../store"
-import { decimal } from "../constant"
 
 export async function getApi() {
   if (store.state.api) {
     return store.state.api
   }
+  store.commit('saveIsConnected', false)
   const wsProvider = new WsProvider(POLKADOT_CHAIN_WEB_SOCKET_MAP["POLKADOT"])
   const api = await ApiPromise.create({
     provider: wsProvider,
@@ -31,6 +31,8 @@ export async function getApi() {
       PalletId: 'Raw'
     }
   })
+
+  store.commit('saveIsConnected', true)
   store.commit('saveApi', api)
   return api
 }

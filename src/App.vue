@@ -205,10 +205,10 @@ export default {
       })))
     })
     this.setActiveMenu()
-    loadAccounts()
   },
   async created () {
-    subBlock()
+    await subBlock()
+    loadAccounts()
     // await connect();
   },
   beforeDestroy () {

@@ -29,7 +29,6 @@ export const loadAccounts = async () => {
     }))
     store.commit('saveAllAccounts', allAccounts)
     let account = store.state.account || allAccounts[0]
-    const api = await getApi()
     store.commit('saveAccount', account)
     getBalance(account)
     subNominators()
@@ -66,6 +65,7 @@ export const getBalance = async (account) => {
     },
     nonce: currentNonce
   }) => {
+    console.log(4444);
     store.commit('saveBalance', new BN(currentFree))
   })
 

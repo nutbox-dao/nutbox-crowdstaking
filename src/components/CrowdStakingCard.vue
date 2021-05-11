@@ -18,17 +18,10 @@
       <button
         class="primary-btn"
         @click="nominate"
-        :disabled="nominated"
-      >
-        {{ nominated ? $t('cs.nominated') : $t('cs.nominate') }}
+        :disabled="nominated || loadingStaking"
+      ><b-spinner small type="grow" v-show="loadingStaking"></b-spinner
+        >{{ nominated ? $t('cs.nominated') : $t('cs.nominate') }}
       </button>
-      <!-- <button
-        class="primary-btn"
-        v-show="status === 'Retired'"
-        @click="showWithdraw = true"
-      >
-        {{ $t('cs.nominated') }}
-      </button> -->
     </div>
 
       <b-modal
@@ -100,7 +93,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["isConnected", "lang", 'bonded', 'nominators']),
+    ...mapState(["isConnected", "lang", 'bonded', 'nominators', 'loadingStaking']),
     cardInfo(){
       return Test_Crowdstaking_Data[this.communityId]
     },
@@ -111,7 +104,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.cardInfo.name, stanfiAddress(this.cardInfo.communityId));
   },
 };
 </script>

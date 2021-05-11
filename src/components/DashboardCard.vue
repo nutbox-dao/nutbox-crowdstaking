@@ -53,11 +53,6 @@ export default {
       ],
     };
   },
-  props: {
-    chain: {
-      type: String,
-    },
-  },
   methods: {
     async getRaised(raise) {
       const raised = await formatBalance(raise);
@@ -110,23 +105,6 @@ export default {
     },
   },
   created() {
-    getDashboardSummary({
-      relaychain: this.chain.toLowerCase(),
-      communityId: this.$store.state.account.address,
-    })
-      .then(async (res) => {
-        console.log("dashboard", res);
-        let cards = [];
-        for (let card of res) {
-          const raised = await this.getRaised(card.raisedAmount);
-          card.raised = raised;
-          cards.push(card);
-        }
-        this.items = cards;
-      })
-      .catch((err) => {
-        console.error("request dashboard fail", err);
-      });
   },
 };
 </script>

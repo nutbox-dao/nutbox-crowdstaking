@@ -33,7 +33,13 @@
                 theme="polkadot"
                 :value="item.address"
               />
-              <span>{{ item.address }}</span>
+              <div>
+                <span class="stake-info">{{ item.nick }}</span>
+                <span class="stake-info">otherStake:{{ item.otherStake }}</span>
+                <span class="stake-info">ownStake:{{ item.ownStake }}</span>
+                <span class="stake-info">count:{{ item.nominatorCount }}</span>
+                <span class="stake-info">commission:{{ item.commission }}</span>
+              </div>
             </b-form-checkbox>
           </div>
         </b-form-checkbox-group>
@@ -172,6 +178,9 @@ export default {
     background-position-y: bottom;
     background-position-x: 50%;
   }
+}
+.stake-info{
+  display: block;
 }
 .checkbox-item {
   margin-bottom: 10px;
