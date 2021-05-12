@@ -31,10 +31,9 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { validAddress, formatBalance as fb } from "../../utils/polkadot";
+import { formatBalance as fb } from "../../utils/polkadot";
 import BN from "bn.js";
 import { bondAndNominate } from "../../utils/staking";
-import { Test_Validators, PROJECTID } from "../../config";
 
 export default {
   data() {
@@ -46,12 +45,9 @@ export default {
     };
   },
   props: {
-    communityId: {
-      type: String,
-    },
-    projectId: {
-      type: Number,
-    },
+    crowdstaking: {
+      type: Object,
+    }
   },
   computed: {
     ...mapState(["symbol", "balance", "lang", "nominators"]),
@@ -105,11 +101,12 @@ export default {
       }
       try {
         this.isBondAndNominating = true
+        const { community, project } = this.crowdstaking
         await bondAndNominate(
           this.inputAmount,
-          Test_Validators,
-          this.communityId,
-          PROJECTID,
+          project.validators,
+          community.communityId,
+          project.projectId,
           (info, param) => {
             this.$bvToast.toast(info, param);
           },
@@ -129,7 +126,9 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    console.log(1111,this.crowdstaking);
+  },
 };
 </script>
 

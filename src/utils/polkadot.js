@@ -23,6 +23,8 @@ export async function getApi() {
     return store.state.api
   }
   store.commit('saveIsConnected', false)
+
+  console.log('connecting');
   const wsProvider = new WsProvider(POLKADOT_CHAIN_WEB_SOCKET_MAP["POLKADOT"])
   const api = await ApiPromise.create({
     provider: wsProvider,
@@ -31,6 +33,7 @@ export async function getApi() {
       PalletId: 'Raw'
     }
   })
+  console.log('connected');
 
   store.commit('saveIsConnected', true)
   store.commit('saveApi', api)

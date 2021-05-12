@@ -1,20 +1,7 @@
 import {
-  u8aConcat,
-  u8aToHex,
-  hexToU8a,
-  stringToHex,
-  hexToString
-} from "@polkadot/util"
-import {
-  blake2AsU8a,
   encodeAddress,
   decodeAddress
 } from "@polkadot/util-crypto"
-import BN from "bn.js"
-import {
-  PARA_STATUS,
-  CHAIN_ID,
-} from "../config"
 import store from "../store"
 
 import {
@@ -23,10 +10,7 @@ import {
 
 import {
   getApi,
-  uni2Token,
   token2Uni,
-  getDecimal,
-  getNodeId,
   stanfiAddress,
   getTxPaymentInfo
 } from './polkadot'
@@ -48,7 +32,6 @@ export const subBonded = async () => {
       return;
     }
     store.commit('saveBonded', bonded.toJSON())
-    console.log('bonded', bonded.toJSON());
   })
   store.commit('saveSubBonded', subBonded)
 }
@@ -63,7 +46,6 @@ export const subNominators = async () => {
   } catch (e) {}
   const api = await getApi()
   const {validators} = await api.derive.staking.overview()
-  console.log('validators', validators.slice(0,10))
 
   store.commit('saveLoadingStaking', true)
 // 获取用户投票的情况
@@ -73,7 +55,6 @@ export const subNominators = async () => {
       store.commit('saveLoadingStaking', false)
       return;
     }
-    console.log('nominatores', nominators.toJSON().targets);
     // 获取节点的昵称
     let infos = await Promise.all(nominators.toJSON().targets.map(v => api.derive.accounts.info(v)))
     infos = infos.map(acc => {
@@ -105,7 +86,7 @@ export const subNominators = async () => {
       infos[i]['otherStake'] = validatorTotalStake - validatorOwnStake
       infos[i]['ownStake'] = validatorOwnStake
       infos[i]['nominatorCount'] = validatorNominators.length
-      infos[i]['commission'] = validatorComissionRate['commission'].toString() / 10000000 + '%'
+      infos[i]['commission'] = (validatorComissionRate['commission'].toString() / 10000000).toFixed(1) + '%'
     }
     store.commit('saveLoadingStaking', false)
     store.commit('saveNominators', infos)
@@ -130,7 +111,6 @@ export const nominate = async (validators, communityId, projectId, toast, callba
     const api = await injectAccount(store.state.account)
     const nominatorTx = api.tx.staking.nominate(validators)
     const remark = encodeRemark(communityId, projectId)
-    console.log('remark', remark, encodeAddress(hexToU8a(remark).slice(1,33), 0));
     const remarkTx = api.tx.system.remarkWithEvent(remark)
     const nonce = (await api.query.system.account(from)).nonce.toNumber()
   
@@ -176,7 +156,6 @@ export const bondAndNominate = async (amount, validators, communityId, projectId
 
   const nominatorTx = api.tx.staking.nominate(validators)
   const remark = encodeRemark(communityId, projectId)
-  console.log('remark', remark);
   const remarkTx = api.tx.system.remarkWithEvent(remark)
   const nonce = (await api.query.system.account(from)).nonce.toNumber()
 

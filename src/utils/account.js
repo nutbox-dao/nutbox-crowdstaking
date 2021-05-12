@@ -22,7 +22,6 @@ export const loadAccounts = async () => {
     keyring.loadAll({
       isDevelopment: false
     }, allAccounts)
-    console.log('accs:', allAccounts);
     allAccounts = allAccounts.map(({address, meta}) => ({
       address: stanfiAddress(address),
       meta
@@ -65,7 +64,6 @@ export const getBalance = async (account) => {
     },
     nonce: currentNonce
   }) => {
-    console.log(4444);
     store.commit('saveBalance', new BN(currentFree))
   })
 

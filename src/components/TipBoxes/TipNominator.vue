@@ -8,12 +8,12 @@
     />
     <div class="tip-contribute">
       <div class="text-center mb-4 font20" v-if="lang === 'en'">
-        Nominate to<span class="big"> BML's </span>validators <br />
-        through<span class="big"> {{ cardInfo.name }} </span>community
+        Nominate to<span class="big"> {{ crowdstaking.project.projectName + "'s" }} </span>validators <br />
+        through<span class="big"> {{ crowdstaking.community.communityName }} </span>community
       </div>
       <div class="text-center mb-4 font20" v-else>
-        通过<span class="big"> {{ cardInfo.name }} </span>社区<br />
-        为<span class="big"> BML </span>的验证者节点投票<br />
+        通过<span class="big"> {{ crowdstaking.community.communityName }} </span>社区<br />
+        为<span class="big"> crowdstaking.project.projectName </span>的验证者节点投票<br />
       </div>
 
       <div v-if="needToCancelValidators > 0">
@@ -59,7 +59,6 @@
 
 <script>
 import { mapState } from "vuex";
-import { Test_Validators, PROJECTID } from "../../config";
 import { nominate } from "../../utils/staking";
 import { MAX_NOMINATE_VALIDATOR } from "../../constant";
 import Identicon from "@polkadot/vue-identicon";
@@ -75,7 +74,7 @@ export default {
     };
   },
   props: {
-    cardInfo: {
+    crowdstaking: {
       type: Object,
     },
   },
@@ -85,12 +84,12 @@ export default {
   computed: {
     ...mapState(["symbol", "balance", "lang", "bonded", "nominators"]),
     availableNominators() {
-      return this.nominators.filter((n) => Test_Validators.indexOf(n) === -1);
+      return this.nominators.filter((n) => this.crowdstaking.project.validators.indexOf(n) === -1);
     },
     needToCancelValidators() {
       return (
         this.availableNominators.length +
-        Test_Validators.length -
+        this.crowdstaking.project.validators.length -
         MAX_NOMINATE_VALIDATOR
       );
     },
@@ -114,23 +113,24 @@ export default {
         return this.availableNominators
           .filter((n) => this.selected.indexOf(n.address) !== -1)
           .map(({ address }) => address)
-          .concat(Test_Validators);
+          .concat(this.crowdstaking.project.validators);
       } else {
         // 直接拼接节点
         return this.availableNominators
           .map(({ address }) => address)
-          .concat(Test_Validators);
+          .concat(this.crowdstaking.project.validators);
       }
     },
     async confirm() {
       try {
         this.isNominating = true;
+        const { community, project } = this.crowdstaking
         const validators = this.getNominateValidators();
         console.log('selecet validator', validators);
         await nominate(
           validators,
-          this.cardInfo.communityId,
-          PROJECTID,
+          community.communityId,
+          project.projectId,
           (info, param) => {
             this.$bvToast.toast(info, param);
           },

@@ -5,7 +5,7 @@
       <p class="font16">{{ $t('tip.loading') }}</p>
     </div>
     <template v-else>
-      <div class="bg" v-if="showingCard.length > 0"></div>
+      <div class="bg" v-if="crowdstakings.length > 0"></div>
       <div class="empty-bg" v-else>
         <img src="~@/static/images/empty-data.png" alt="" />
         <p> {{ $t('tip.noAuction') }} </p>
@@ -13,9 +13,9 @@
       <div class="cards-container">
         <div class="container">
           <div class="row">
-            <div class="col-lg-4 col-md-6" v-for="card, idx of showingCard" :key="idx">
+            <div class="col-lg-4 col-md-6" v-for="card, idx of crowdstakings" :key="idx">
                 <CrowdStakingCard
-                  :communityId="card.id"
+                  :crowdstaking="card"
                 />
             </div>
           </div>
@@ -27,25 +27,15 @@
 
 <script>
 import CrowdStakingCard from "../components/CrowdStakingCard";
-import {
-  
-} from "../utils/staking";
 import { mapMutations, mapState, mapGetters } from "vuex";
-import { getOnshowingCrowdloanCard } from "../apis/api"
-import { Test_Crowdstaking_Data } from '../config'
 
 export default {
   name: "Home",
-  data() {
-    return {
-      showingCard: Test_Crowdstaking_Data
-    }
-  },
   components: {
     CrowdStakingCard,
   },
   computed: {
-    ...mapState(["projectFundInfos", "symbol", "isConnected", 'balance']),
+    ...mapState(["projectFundInfos", "symbol", "isConnected", 'balance', 'crowdstakings']),
     funds() {
       const fundInfos = this.getFundInfos();
       return fundInfos || [];
@@ -60,7 +50,6 @@ export default {
     ]),
   },
   async created() {
-    console.log(this.showingCard);
     // const res = await getOnshowingCrowdloanCard({relaychain:this.symbol.toLowerCase()})
     // await subscribeFundInfo(res);
   },

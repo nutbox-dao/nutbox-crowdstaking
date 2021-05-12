@@ -18,18 +18,21 @@ export default new Vuex.Store({
     bonded: '',
     nominators: [],
     communitys: [],
+    crowdstakings:[],
     isConnected: true,
     loadingStaking: true,
     account: Cookie.get('polkadot-account'),
     allAccounts: [],
     balance: 0,
     locked: 0,
-    projectFundInfos: [],
     currentBlockNum: {},
   },
   mutations: {
     saveCommunitys: (state, communitys) => {
       state.communitys = communitys
+    },
+    saveCrowdstakings: (state, crowdstakings) => {
+      state.crowdstakings = crowdstakings
     },
     saveSubBalance: (state, subBalance) => {
       state.subBalance = subBalance

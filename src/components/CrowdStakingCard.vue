@@ -4,12 +4,12 @@
       <div class="icons">
         <img
           class="icon1"
-          :src="cardInfo.icon"
+          :src="crowdstaking.community.iconUrl"
           alt=""
         />
       </div>
       <div class="title-text font20 font-bold">
-        <span>{{ cardInfo.name }}</span>
+        <span>{{ crowdstaking.community.communityName }}</span>
       </div>
 
     </div>
@@ -33,7 +33,7 @@
       no-close-on-backdrop
     >
       <TipNominator
-        :cardInfo="cardInfo"
+        :crowdstaking="crowdstaking"
         @hideNominate="showNominate = false"
       />
     </b-modal>
@@ -47,8 +47,7 @@
       no-close-on-backdrop
     >
       <TipBondAndNominator
-        :communityId="cardInfo.communityId"
-        :projectId="projectId"
+        :crowdstaking="crowdstaking"
         @hideBondAndNominate="showBondAndNominator = false"
       />
     </b-modal>
@@ -59,7 +58,7 @@
 import TipBondAndNominator from './TipBoxes/TipBondAndNominator'
 import TipNominator from './TipBoxes/TipNominator'
 import { mapState } from "vuex";
-import { TOKEN_SYMBOL, PARA_STATUS, Test_Validators, Test_Crowdstaking_Data } from "../config";
+import { TOKEN_SYMBOL, PARA_STATUS } from "../config";
 import { stanfiAddress } from "../utils/polkadot"
 
 export default {
@@ -72,11 +71,8 @@ export default {
     };
   },
   props: {
-    projectId: {
-      type: Number,
-    },
-    communityId: {
-      type: String,
+    crowdstaking: {
+      type: Object,
     },
   },
   components: {
@@ -94,12 +90,9 @@ export default {
   },
   computed: {
     ...mapState(["isConnected", "lang", 'bonded', 'nominators', 'loadingStaking']),
-    cardInfo(){
-      return Test_Crowdstaking_Data[this.communityId]
-    },
     // 用户已经投了该项目的节点
     nominated(){
-      const val = Test_Validators.map(tcd => stanfiAddress(tcd))
+      const val = this.crowdstaking.project.validators.map(tcd => stanfiAddress(tcd))
       return this.nominators.filter(({address}) => val.indexOf(address) !== -1).length === val.length
     }
   },
