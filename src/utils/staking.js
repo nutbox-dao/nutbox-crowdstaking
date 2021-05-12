@@ -62,12 +62,12 @@ export const subNominators = async () => {
       let address = stanfiAddress(acc.accountId)
       if (acc.identity?.displayParent){
         if (acc.identity?.display){
-          nick = acc.identity.displayParent + '/' + acc.identity.display
+          nick = acc.identity.displayParent + ' (' + acc.identity.display + ')'
         }else{
           nick = acc.identity.displayParent
         }
       }else{
-        nick = `${address.slice(0,8)}...${address.slice(-6)}`
+        nick = `${address.slice(0,16)}...${address.slice(-5)}`
       }
       return {
         address: stanfiAddress(acc.accountId),
@@ -80,12 +80,11 @@ export const subNominators = async () => {
       const addr = infos[i].address
       const validatorStake = await api.query.staking.erasStakers(currentEra.toString(), addr)
       const validatorComissionRate = await api.query.staking.erasValidatorPrefs(currentEra.toString(), addr)
-      const validatorTotalStake = validatorStake['total'].toString() / 1e10
-      const validatorOwnStake = validatorStake['own'].toString() / 1e10
+      const validatorTotalStake = parseInt(validatorStake['total'].toString() / 1e10)
+      const validatorOwnStake = parseInt(validatorStake['own'].toString() / 1e10)
       const validatorNominators = validatorStake['others'].toJSON()
-      infos[i]['otherStake'] = validatorTotalStake - validatorOwnStake
+      infos[i]['otherStake'] = (validatorTotalStake - validatorOwnStake) + '(' + validatorNominators.length + ')'
       infos[i]['ownStake'] = validatorOwnStake
-      infos[i]['nominatorCount'] = validatorNominators.length
       infos[i]['commission'] = (validatorComissionRate['commission'].toString() / 10000000).toFixed(1) + '%'
     }
     store.commit('saveLoadingStaking', false)

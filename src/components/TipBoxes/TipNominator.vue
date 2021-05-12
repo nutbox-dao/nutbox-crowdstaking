@@ -27,18 +27,11 @@
         >
           <div v-for="item of availableNominators" :key="item.address">
             <b-form-checkbox class="checkbox-item" :value="item.address">
-              <Identicon
-                class="ident-icon"
-                :size="30"
-                theme="polkadot"
-                :value="item.address"
-              />
               <div>
                 <span class="stake-info">{{ item.nick }}</span>
+                <span class="stake-info">commission:{{ item.commission }}</span>
                 <span class="stake-info">otherStake:{{ item.otherStake }}</span>
                 <span class="stake-info">ownStake:{{ item.ownStake }}</span>
-                <span class="stake-info">count:{{ item.nominatorCount }}</span>
-                <span class="stake-info">commission:{{ item.commission }}</span>
               </div>
             </b-form-checkbox>
           </div>
@@ -61,7 +54,6 @@
 import { mapState } from "vuex";
 import { nominate } from "../../utils/staking";
 import { MAX_NOMINATE_VALIDATOR } from "../../constant";
-import Identicon from "@polkadot/vue-identicon";
 
 export default {
   data() {
@@ -77,9 +69,6 @@ export default {
     crowdstaking: {
       type: Object,
     },
-  },
-  components: {
-    Identicon,
   },
   computed: {
     ...mapState(["symbol", "balance", "lang", "bonded", "nominators"]),
