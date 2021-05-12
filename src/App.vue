@@ -153,7 +153,7 @@ export default {
       })
     },
     isCommunityAdmin () {
-      return this.commnunityIds.indexOf(this.account && this.account.address) !== -1
+      return this.communitys.indexOf(this.account && this.account.address) !== -1
     },
     menuOptions () {
       return this.isCommunityAdmin ? [
@@ -179,9 +179,6 @@ export default {
     },
     cnIcon (){
       return this.lang === 'zh-CN' ? require('./static/images/selected.png') : require('./static/images/selected-gray.png')
-    },
-    commnunityIds () {
-      return this.communitys.map(c => c.communityId)
     }
   },
   data () {
@@ -210,7 +207,7 @@ export default {
           validators: project.validators.map(v => stanfiAddress(v))
         }
       })))
-
+      this.$store.commit('saveCommunitys', res.map(({community}) => community.communityId))
     console.log('crowdstaking', this.crowdstakings);
     })
     this.setActiveMenu()
