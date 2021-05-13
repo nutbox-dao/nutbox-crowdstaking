@@ -28,14 +28,14 @@
                           <div class="flex-between-center">
                             <Identicon class="ident-icon" :size='26' theme='polkadot' :value="item.address"/>
                             <div class="account-info">
-                              <div class="font-bold" style="text-align:left">{{ item.meta.name }}</div>
+                              <div class="font-bold" style="text-align:left">{{ item.meta?item.meta.name:'' }}</div>
                               <div>{{ formatUserAddress(item.address, false) }}</div>
                             </div>
                             <img class="ml-3" v-if="item.address===(account && account.address)" src="~@/static/images/selected.png" alt="">
                           </div>
                         </template>
                   </div>
-                  <div class="v-menu-item flex-start-center" v-for="item,idx of vMenuOptions" :key="idx"
+                  <div class="v-menu-item flex-start-center" v-for="(item,idx) of vMenuOptions" :key="idx"
                        @click="selectMenu(item.id, item.url)">
                     <div class="v-menu-line" :class="item.id === activeNav?'active':''"></div>
                     <span class="font-bold">{{item.label}}</span>
@@ -63,7 +63,7 @@
                         <div class="flex-between-center font18" @click="accountsPop=!accountsPop">
                           <Identicon :size='30' theme='polkadot' v-if="account" :value="account.address"/>
                           <b-avatar v-else class="mr-2" size="sm" text=""></b-avatar>
-                          <span style="margin-left:8px">{{ formatUserAddress(account && account.meta.name) }}</span>
+                          <span style="margin-left:8px">{{ formatUserAddress(account && account.meta && account.meta.name) }}</span>
                         </div>
                       </template>
                       <b-dropdown-item v-for="(item,index) of (allAccounts ? allAccounts : [])" :key="index" @click="changeAccount(item)">
@@ -71,7 +71,7 @@
                           <div class="flex-between-center">
                             <Identicon class="ident-icon" :size='30' theme='polkadot' :value="item.address"/>
                             <div class="account-info">
-                              <div class="font-bold">{{ item.meta.name }}</div>
+                              <div class="font-bold">{{ item.meta?item.meta.name:'' }}</div>
                               <div>{{ formatUserAddress(item.address) }}</div>
                             </div>
                             <img class="ml-3" v-if="item.address===(account && account.address)" src="~@/static/images/selected.png" alt="">
@@ -214,7 +214,7 @@ export default {
   },
   async created () {
     await subBlock()
-    loadAccounts()
+    await loadAccounts()
     // await connect();
   },
   beforeDestroy () {
