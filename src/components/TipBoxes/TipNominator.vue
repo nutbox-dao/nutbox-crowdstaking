@@ -73,7 +73,7 @@ export default {
   computed: {
     ...mapState(["symbol", "balance", "lang", "bonded", "nominators"]),
     availableNominators() {
-      return this.nominators.filter((n) => this.crowdstaking.project.validators.indexOf(n) === -1);
+      return this.nominators.filter(({address}) => this.crowdstaking.project.validators.indexOf(address) === -1);
     },
     needToCancelValidators() {
       return (
@@ -100,7 +100,7 @@ export default {
       if (this.needToCancelValidators > 0) {
         // 从用户选择的列表获取投票
         return this.availableNominators
-          .filter((n) => this.selected.indexOf(n.address) !== -1)
+          .filter(({address}) => this.selected.indexOf(address) !== -1)
           .map(({ address }) => address)
           .concat(this.crowdstaking.project.validators);
       } else {

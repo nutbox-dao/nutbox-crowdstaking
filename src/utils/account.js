@@ -74,7 +74,7 @@ export const getBalance = async (account) => {
       return
     }
     store. commit('saveLocked', new BN(locked[0].amount))
-    console.log('lock', locked[0].amount.toHuman());
+    // console.log('lock', locked[0].amount.toHuman());
   })
 
   store. commit('saveSubLocked', subLocked)

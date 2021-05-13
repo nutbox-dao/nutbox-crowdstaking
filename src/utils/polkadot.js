@@ -34,6 +34,43 @@ export async function getApi() {
     }
   })
   console.log('connected');
+  
+  await api.rpc.chain.subscribeNewHeads(async (header) => {
+    const { number } = header
+    const blockHash = await api.rpc.chain.getBlockHash(number);
+    const signedBlock = await api.rpc.chain.getBlock(blockHash); 
+
+    const allRecords = await api.query.system.events.at(
+      signedBlock.block.header.hash
+    );
+    const data = {};
+
+    // map between the extrinsics and events
+    signedBlock.block.extrinsics.forEach(
+      ({ method: { method, section } }, index) => {
+        // filter the specific events based on the phase and then the
+        // index of our extrinsic in the block
+        const events = allRecords
+          .filter(
+            ({ phase }) =>
+              phase.isApplyExtrinsic && phase.asApplyExtrinsic.eq(index)
+          )
+          // test the events against the specific types we are looking for
+          .forEach(({ event, phase }) => {
+            const types = event.typeDef;
+            const fields = {};
+
+            // Loop through each of the parameters, displaying the type and data
+            event.data.forEach((data, index) => {
+              fields[types[index].type] = data.toString();
+            });
+
+            data[`${event.section}:${event.method}`] = fields;
+          });
+      }
+    );
+    console.log(1244, data);
+  })
 
   store.commit('saveIsConnected', true)
   store.commit('saveApi', api)
