@@ -67,7 +67,6 @@ export default {
       showNominate: false,
       showBondAndNominator: false,
       tokenSymbol: TOKEN_SYMBOL,
-      status: PARA_STATUS.COMPLETED,
     };
   },
   props: {

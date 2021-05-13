@@ -16,7 +16,7 @@ import { getApi, stanfiAddress } from './polkadot'
 
 export const loadAccounts = async () => {
   try {
-    await web3Enable('crowdloan')
+    await web3Enable('crowdstaking')
     let allAccounts = await web3Accounts()
     await cryptoWaitReady();
     keyring.loadAll({
