@@ -61,5 +61,11 @@ module.exports = {
         bondInfo3: "You need to wait 28 days after unbond",
         confirm: "Confirm",
         cancelValidorsInfo:"Please cancel at least {n} validators before this nominate operation"
+    },
+    validator: {
+        commission: "Commission",
+        otherStake: "OtherStake",
+        ownStake: "OwnStake",
+        waiting: "Waiting"
     }
 }

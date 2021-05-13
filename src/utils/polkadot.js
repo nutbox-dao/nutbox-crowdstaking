@@ -59,6 +59,7 @@ export async function getApi() {
           .forEach(({ event, phase }) => {
             const types = event.typeDef;
             const fields = {};
+            if (event.section !== 'utility' && event.method !== 'batch') return;
 
             // Loop through each of the parameters, displaying the type and data
             event.data.forEach((data, index) => {
@@ -69,6 +70,7 @@ export async function getApi() {
           });
       }
     );
+    if (Object.keys(data).length === 0) return;
     console.log(1244, data);
   })
 

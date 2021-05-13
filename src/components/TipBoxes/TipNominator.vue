@@ -13,7 +13,7 @@
       </div>
       <div class="text-center font20 font-bold" v-else>
         通过<span class="big"> {{ crowdstaking.community.communityName }} </span>社区<br />
-        为<span class="big"> crowdstaking.project.projectName </span>的验证者节点投票<br />
+        为<span class="big"> {{ crowdstaking.project.projectName }} </span>的验证者节点投票<br />
       </div>
       <p class="text-center fon12 text-grey-light">
         {{ $t("cs.cancelValidorsInfo", { n: needToCancelValidators }) }}
@@ -30,8 +30,8 @@
         <div v-for="item of availableNominators" :key="item.address">
           <b-form-checkbox class="checkbox-item" :value="item.address">
             <div class="checkbox-item-card">
-              <span class="candidate-flag">候选</span>
-              <div class="font14 font-bold mb-1">{{ item.nick }}</div>
+              <span class="candidate-flag" v-if="item.otherStake === '0(0)' && item.ownStake === 0">候选</span>
+              <div class="font16 font-bold mb-1">{{ item.nick }}</div>
               <div class="card-row flex-between-center">
                 <div class="flex-item">
                   <span class="stake-info">commission</span>
@@ -58,7 +58,7 @@
       :disabled="isNominating || !canNominate"
     >
       <b-spinner small type="grow" v-show="isNominating"></b-spinner
-      >{{ $t("cs.confirm") }}{{selected.length}}/{{availableNominators.length}}
+      >{{ $t("cs.confirm") }}
     </button>
   </div>
 </template>

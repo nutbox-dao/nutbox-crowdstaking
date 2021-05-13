@@ -61,5 +61,11 @@ module.exports = {
         bondInfo3: "解绑操作后需要等待28天",
         confirm: "确定",
         cancelValidorsInfo:"请取消至少 {n} 个您已经投票过的节点，再进行本次投票"
+    },
+    validator: {
+        commission: "佣金",
+        otherStake: "其他人的质押",
+        ownStake: "自己的质押",
+        waiting: "候选"
     }
 }
