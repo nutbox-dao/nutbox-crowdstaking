@@ -32,16 +32,18 @@
             <div class="checkbox-item-card">
               <span class="candidate-flag">候选</span>
               <div class="font14 font-bold mb-1">{{ item.nick }}</div>
-              <div class="row flex-between-center">
-                <div class="col-sm-4 flex-item">
+              <div class="card-row flex-between-center">
+                <div class="flex-item text-center">
                   <span class="stake-info">commission</span>
                   <span class="stake-info">{{ item.commission }}</span>
                 </div>
-                <div class="col-sm-4 flex-item">
+                <div class="v-line"></div>
+                <div class="flex-item text-center">
                   <span class="stake-info">otherStake</span>
                   <span class="stake-info">{{ item.otherStake }}</span>
                 </div>
-                <div class="col-sm-4 flex-item">
+                <div class="v-line"></div>
+                <div class="flex-item text-center">
                   <span class="stake-info">ownStake</span>
                   <span class="stake-info">{{ item.ownStake }}</span>
                 </div>
@@ -202,8 +204,15 @@ export default {
   margin-bottom: 15px;
   margin-top: 24px;
 }
+.v-line {
+  height: 26px;
+  width: 1px;
+  background-color: #BDBFC2;
+  opacity: .2;
+}
 .stake-info{
   display: block;
+  line-height: 16px;
 }
 .checkbox-item {
   margin-bottom: 12px;
@@ -216,9 +225,9 @@ export default {
   &::before {
     top: 50% !important;
     transform: translateY(-50%);
-    left: -3rem !important;
-    width: 2rem!important;
-    height: 2rem!important;
+    left: -1.8rem !important;
+    width: 1.4rem!important;
+    height: 1.4rem!important;
     border: none !important;
     background-image: url("../../static/images/no-check.png");
     background-repeat: no-repeat;
@@ -230,11 +239,11 @@ input {
   outline: none;
 }
 .custom-control {
-  padding-left: 3.2rem!important;
+  padding-left: 2rem!important;
 }
 .custom-control-input {
-  width: 2rem!important;
-  height: 2rem!important;
+  width: 1.4rem!important;
+  height: 1.4rem!important;
 }
 .custom-control-input:checked ~ .custom-control-label::before {
   background-image: url("../../static/images/checked.png");
@@ -246,8 +255,15 @@ input {
   padding: 16px;
   width: 100%;
   position: relative;
+  .card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .flex-item {
+    flex: 1;
     color: #BDBFC2;
+    font-size: .7rem;
   }
   .candidate-flag {
     position: absolute;
@@ -257,6 +273,7 @@ input {
     padding: 2px 10px;
     border-top-left-radius: 40px;
     border-bottom-left-radius: 40px;
+    font-size: .7rem;
   }
 }
 .input-group-box {
@@ -281,11 +298,18 @@ input {
 .label {
   text-align: left;
 }
-@media (max-width: 578px) {
+@media (max-width: 320px) {
+  .card-row {
+    flex-direction: column;
+  }
   .flex-item {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     margin: 3px 0;
+  }
+  .v-line {
+    display: none;
   }
 }
 </style>
