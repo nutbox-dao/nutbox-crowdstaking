@@ -32,16 +32,16 @@
             <div class="checkbox-item-card">
               <span class="candidate-flag">候选</span>
               <div class="font14 font-bold mb-1">{{ item.nick }}</div>
-              <div class="card-row flex-between-center">
-                <div class="flex-item">
+              <div class="row flex-between-center">
+                <div class="col-sm-4 flex-item">
                   <span class="stake-info">commission</span>
                   <span class="stake-info">{{ item.commission }}</span>
                 </div>
-                <div class="flex-item">
+                <div class="col-sm-4 flex-item">
                   <span class="stake-info">otherStake</span>
                   <span class="stake-info">{{ item.otherStake }}</span>
                 </div>
-                <div class="flex-item">
+                <div class="col-sm-4 flex-item">
                   <span class="stake-info">ownStake</span>
                   <span class="stake-info">{{ item.ownStake }}</span>
                 </div>
@@ -159,7 +159,7 @@ export default {
 <style lang="less">
 .tip-modal {
   position: relative;
-  max-height: 600px;
+  max-height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -246,8 +246,7 @@ input {
   padding: 16px;
   width: 100%;
   position: relative;
-  .card-row .flex-item{
-    flex: 1;
+  .flex-item {
     color: #BDBFC2;
   }
   .candidate-flag {
@@ -281,5 +280,12 @@ input {
 }
 .label {
   text-align: left;
+}
+@media (max-width: 578px) {
+  .flex-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+  }
 }
 </style>
