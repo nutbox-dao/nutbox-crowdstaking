@@ -19,4 +19,4 @@ export const API_CONNECT_STATE = {
 }
 
 // 最大投票数
-export const MAX_NOMINATE_VALIDATOR = 5
+export const MAX_NOMINATE_VALIDATOR = 16
