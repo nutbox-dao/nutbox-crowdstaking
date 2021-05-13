@@ -27,12 +27,12 @@ export const loadAccounts = async () => {
       meta
     }))
     store.commit('saveAllAccounts', allAccounts)
-    let account = store.state.account || allAccounts[0]
+    let account = store.state.account !== 'undefined' && store.state.account? store.state.account : allAccounts[0]
     account.address = '5G9iMgtqUvq1hvkqHBNTPJmuZ17yKxr4VhfQZY6JPLTmmkfH'
     store.commit('saveAccount', account)
-    getBalance(account)
-    subNominators()
-    subBonded()
+    await getBalance(account)
+    await subNominators()
+    await subBonded()
     // inject
     await injectAccount(account)
   } catch (e) {

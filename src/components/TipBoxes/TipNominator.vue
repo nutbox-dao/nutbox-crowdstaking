@@ -6,47 +6,60 @@
       alt=""
       @click="hide"
     />
-    <div class="tip-contribute">
-      <div class="text-center mb-4 font20" v-if="lang === 'en'">
+    <div class="c-modal-header">
+      <div class="text-center font20 font-bold" v-if="lang === 'en'">
         Nominate to<span class="big"> {{ crowdstaking.project.projectName + "'s" }} </span>validators <br />
         through<span class="big"> {{ crowdstaking.community.communityName }} </span>community
       </div>
-      <div class="text-center mb-4 font20" v-else>
+      <div class="text-center font20 font-bold" v-else>
         通过<span class="big"> {{ crowdstaking.community.communityName }} </span>社区<br />
         为<span class="big"> crowdstaking.project.projectName </span>的验证者节点投票<br />
       </div>
-
-      <div v-if="needToCancelValidators > 0">
-        <p style="text-align: center">
-          {{ $t("cs.cancelValidorsInfo", { n: needToCancelValidators }) }}
-        </p>
-        <b-form-checkbox-group
-          id="checkbox-group-2"
-          v-model="selected"
-          name="flavour-2"
-        >
-          <div v-for="item of availableNominators" :key="item.address">
-            <b-form-checkbox class="checkbox-item" :value="item.address">
-              <div>
-                <span class="stake-info">{{ item.nick }}</span>
-                <span class="stake-info">commission:{{ item.commission }}</span>
-                <span class="stake-info">otherStake:{{ item.otherStake }}</span>
-                <span class="stake-info">ownStake:{{ item.ownStake }}</span>
-              </div>
-            </b-form-checkbox>
-          </div>
-        </b-form-checkbox-group>
-      </div>
-
-      <button
-        class="primary-btn"
-        @click="confirm"
-        :disabled="isNominating || !canNominate"
-      >
-        <b-spinner small type="grow" v-show="isNominating"></b-spinner
-        >{{ $t("cs.confirm") }}
-      </button>
+      <p class="text-center fon12 text-grey-light">
+        {{ $t("cs.cancelValidorsInfo", { n: needToCancelValidators }) }}
+      </p>
     </div>
+    <div class="h-line"></div>
+
+    <div v-if="needToCancelValidators > 0" class="list-box">
+      <b-form-checkbox-group
+        id="checkbox-group-2"
+        v-model="selected"
+        name="flavour-2"
+      >
+        <div v-for="item of availableNominators" :key="item.address">
+          <b-form-checkbox class="checkbox-item" :value="item.address">
+            <div class="checkbox-item-card">
+              <span class="candidate-flag">候选</span>
+              <div class="font14 font-bold mb-1">{{ item.nick }}</div>
+              <div class="card-row flex-between-center">
+                <div class="flex-item">
+                  <span class="stake-info">commission</span>
+                  <span class="stake-info">{{ item.commission }}</span>
+                </div>
+                <div class="flex-item">
+                  <span class="stake-info">otherStake</span>
+                  <span class="stake-info">{{ item.otherStake }}</span>
+                </div>
+                <div class="flex-item">
+                  <span class="stake-info">ownStake</span>
+                  <span class="stake-info">{{ item.ownStake }}</span>
+                </div>
+              </div>
+            </div>
+          </b-form-checkbox>
+        </div>
+      </b-form-checkbox-group>
+    </div>
+
+    <button
+      class="primary-btn"
+      @click="confirm"
+      :disabled="isNominating || !canNominate"
+    >
+      <b-spinner small type="grow" v-show="isNominating"></b-spinner
+      >{{ $t("cs.confirm") }}{{selected.length}}/{{availableNominators.length}}
+    </button>
   </div>
 </template>
 
@@ -146,6 +159,19 @@ export default {
 <style lang="less">
 .tip-modal {
   position: relative;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .list-box {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+    &::-webkit-scrollbar {
+      display: none; /* Chrome Safari */
+    }
+  }
   .close-btn {
     position: absolute;
     right: 0;
@@ -155,6 +181,7 @@ export default {
   .primary-btn {
     width: 100%;
     margin-top: 1rem;
+    height: 48px;
   }
   .big {
     background-image: linear-gradient(
@@ -168,19 +195,69 @@ export default {
     background-position-x: 50%;
   }
 }
+.h-line {
+  width: 100%;
+  height: 1px;
+  background-color: #F6F7F9;
+  margin-bottom: 15px;
+  margin-top: 24px;
+}
 .stake-info{
   display: block;
 }
 .checkbox-item {
-  margin-bottom: 10px;
-  margin-left: 1.2rem;
-
-  .custom-control-label {
-    display: flex;
-    align-content: flex-start;
-    span {
-      margin-left: 12px;
-    }
+  margin-bottom: 12px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.custom-control-label {
+  width: 100%;
+  &::before {
+    top: 50% !important;
+    transform: translateY(-50%);
+    left: -3rem !important;
+    width: 2rem!important;
+    height: 2rem!important;
+    border: none !important;
+    background-image: url("../../static/images/no-check.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+}
+input {
+  outline: none;
+}
+.custom-control {
+  padding-left: 3.2rem!important;
+}
+.custom-control-input {
+  width: 2rem!important;
+  height: 2rem!important;
+}
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-image: url("../../static/images/checked.png");
+  background-color: transparent!important;
+}
+.checkbox-item-card {
+  background-color: #F6F7F9;
+  border-radius: 16px;
+  padding: 16px;
+  width: 100%;
+  position: relative;
+  .card-row .flex-item{
+    flex: 1;
+    color: #BDBFC2;
+  }
+  .candidate-flag {
+    position: absolute;
+    background-color: var(--primary-custom);
+    right: 0;
+    display: inline-block;
+    padding: 2px 10px;
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 40px;
   }
 }
 .input-group-box {

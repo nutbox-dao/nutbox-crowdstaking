@@ -68,9 +68,9 @@ export default new Vuex.Store({
     saveApi: (state, api) => {
       state.api = api
     },
-    saveIsConnected: (state, isConnected) => {
-      state.isConnected = isConnected
-    },
+    // saveIsConnected: (state, isConnected) => {
+    //   state.isConnected = isConnected
+    // },
     saveAccount: (state, account) => {
       state.account = account,
       Cookie.set('polkadot-account', account, '30d')
