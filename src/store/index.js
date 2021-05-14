@@ -17,7 +17,10 @@ export default new Vuex.Store({
     subBonded: {},
     bonded: '',
     nominators: [],
+    // communityIds
     communitys: [],
+    // projectIds
+    projects:[],
     crowdstakings:[],
     isConnected: true,
     loadingStaking: true,
@@ -30,6 +33,9 @@ export default new Vuex.Store({
   mutations: {
     saveCommunitys: (state, communitys) => {
       state.communitys = communitys
+    },
+    saveProjects: (state, projects) => {
+      state.projects = projects
     },
     saveCrowdstakings: (state, crowdstakings) => {
       state.crowdstakings = crowdstakings

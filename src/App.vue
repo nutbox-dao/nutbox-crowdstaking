@@ -80,13 +80,13 @@
                       </b-dropdown-item>
                       <b-dropdown-divider v-if="Object.keys(allAccounts || []).length>0"></b-dropdown-divider>
                       <b-dropdown-item>
-                        <div class="flex-start-center" @click="selectMenu('dashboard', '/dashboard')" v-if="isCommunityAdmin">
+                        <div class="flex-start-center" @click="selectMenu('dashboard', '/dashboard')" v-if="isProjectAdmin">
                           <!-- <b-avatar square size="sm" class="mr-2" style="opacity: .2">·</b-avatar> -->
                           <img class="menu-icon" :src="dashboardIcon" alt="">
                           <span class="menu-text">{{ $t('account.dashboard') }}</span>
                         </div>
                       </b-dropdown-item>
-                      <b-dropdown-divider v-if="isCommunityAdmin"></b-dropdown-divider>
+                      <b-dropdown-divider v-if="isProjectAdmin"></b-dropdown-divider>
                       <b-dropdown-item>
                         <div class="flex-start-center" @click="selectMenu('en', 'en')">
                           <!-- <b-avatar square size="sm" class="mr-2" style="opacity: .2">·</b-avatar> -->
@@ -140,6 +140,7 @@ export default {
       'account',
       'crowdstakings',
       'communitys',
+      'projects',
       'lang'
     ]),
     hMenuOptions () {
@@ -152,11 +153,11 @@ export default {
         return item.v
       })
     },
-    isCommunityAdmin () {
-      return this.communitys.indexOf(this.account && this.account.address) !== -1
+    isProjectAdmin () {
+      return this.projects.indexOf(this.account && this.account.address) !== -1
     },
     menuOptions () {
-      return this.isCommunityAdmin ? [
+      return this.isProjectAdmin ? [
         { id: 'home', url: '/', label: this.$t('homePage.home'), h: true, v: false },
         // { id: 'contributions', url: '/contributions', label: this.$t('account.contributions'), h: false, v: true },
         { id: 'dashboard', url: '/dashboard', label: this.$t('account.dashboard'), h: false, v: true },
@@ -208,6 +209,7 @@ export default {
         }
       })))
       this.$store.commit('saveCommunitys', res.map(({community}) => community.communityId))
+      this.$store.commit('saveProjects', res.map(({project}) => project.projectId))
     console.log('crowdstaking', this.crowdstakings);
     })
     this.setActiveMenu()
@@ -232,9 +234,14 @@ export default {
       }
     },
     selectMenu (id, url) {
+      console.log(id, url,this.activeNav);
       if (id == 'zh' || id == 'en'){
         this.$store.commit('saveLang', url);
         this.$i18n.locale = url;
+        return
+      }
+      if (id === 'home'){
+        this.$router.push(url)
         return
       }
       if (id === this.activeNav || id === 'polkadot') {
