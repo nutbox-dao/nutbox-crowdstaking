@@ -1,16 +1,16 @@
-language: node_js
-node_js:
-  - lts/*
-install:
-  - yarn install
-script:
-  - yarn build
-deploy:
-  provider: pages
-  fqdn: donut.nutbox.io
-  skip_cleanup: true
-  local_dir: dist
-  github_token: $GITHUB_TOKEN
-  keep_history: true
-  on:
-    branch: master
+name: Nutbox crowdstaking interface deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Build and Deploy
+      uses: nutbox-dao/nutbox-crowdstaking@master
+      env:
+        BUILD_SCRIPT: npm install && npm run build
