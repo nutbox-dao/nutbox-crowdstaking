@@ -39,7 +39,6 @@
 import CsvExportor from "csv-exportor";
 import { getDarshboardCard, getNominationSummary } from "../apis/api";
 import { formatBalance } from "../utils/polkadot";
-import { formatDate } from "../utils/utils";
 
 export default {
   data() {

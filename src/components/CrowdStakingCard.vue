@@ -58,7 +58,7 @@
 import TipBondAndNominator from './TipBoxes/TipBondAndNominator'
 import TipNominator from './TipBoxes/TipNominator'
 import { mapState } from "vuex";
-import { TOKEN_SYMBOL, PARA_STATUS } from "../config";
+import { TOKEN_SYMBOL } from "../config";
 import { stanfiAddress } from "../utils/polkadot"
 
 export default {
