@@ -24,7 +24,8 @@ module.exports = {
         completed: "已完成"
     },
     dashboard: {
-        export: "导出"
+        export: "导出",
+        nominators: "提名人数"
     },
     tip: {
         loading: "加载中，请稍等",

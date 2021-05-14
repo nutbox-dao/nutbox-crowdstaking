@@ -36,39 +36,6 @@ export async function getApi() {
   })
   console.log('connected');
 
-  await api.rpc.chain.subscribeNewHeads(async (header) => {
-    const {
-      number
-    } = header
-    const blockHash = await api.rpc.chain.getBlockHash(number);
-    const signedBlock = await api.rpc.chain.getBlock(blockHash);
-    const data = {};
-
-    // map between the extrinsics and events
-    signedBlock.block.extrinsics.forEach(
-      ({
-        method
-      }, index) => {
-
-        if (method.section === 'utility' && method.method === 'batch') {
-          console.log(4444, method.toJSON(), index);
-        }
-      }
-    );
-  })
-
-  const remark = '0x01ee7eb89546c3b58a884a44f1e0fcb17ad9f6054552bddfe124867dc6a12f8b0a1c1cd71897b571c4818e1d36a98a916edc39e50cddedc9ead4aa0dd20f8a6b59'
-  let buf = hexToU8a(remark);
-  console.log('decodeRemark', buf, buf.length);
-  if (buf.length === 65){
-    const a = {
-      op: buf[0],
-      communityId: stanfiAddress(buf.slice(1,33)),
-      projectId: stanfiAddress(buf.slice(-32))
-    }
-    console.log('a', a);
-  }
-
   store.commit('saveIsConnected', true)
   store.commit('saveApi', api)
   return api

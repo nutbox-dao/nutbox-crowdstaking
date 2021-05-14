@@ -23,8 +23,9 @@ module.exports = {
         optional: "(optional)",
         completed: "Completed"
     },
-    dashborad: {
-        export: "Export"
+    dashboard: {
+        export: "Export",
+        nominators: "Nominators"
     },
     tip: {
         loading: "Loading, please wait",
