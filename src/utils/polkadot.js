@@ -5,6 +5,7 @@ import {
 import {
   isHex,
   hexToU8a,
+  u8aToHex,
   formatBalance as fb
 } from "@polkadot/util"
 import {
@@ -34,45 +35,39 @@ export async function getApi() {
     }
   })
   console.log('connected');
-  
-  await api.rpc.chain.subscribeNewHeads(async (header) => {
-    const { number } = header
-    const blockHash = await api.rpc.chain.getBlockHash(number);
-    const signedBlock = await api.rpc.chain.getBlock(blockHash); 
 
-    const allRecords = await api.query.system.events.at(
-      signedBlock.block.header.hash
-    );
+  await api.rpc.chain.subscribeNewHeads(async (header) => {
+    const {
+      number
+    } = header
+    const blockHash = await api.rpc.chain.getBlockHash(number);
+    const signedBlock = await api.rpc.chain.getBlock(blockHash);
     const data = {};
 
     // map between the extrinsics and events
     signedBlock.block.extrinsics.forEach(
-      ({ method: { method, section } }, index) => {
-        // filter the specific events based on the phase and then the
-        // index of our extrinsic in the block
-        const events = allRecords
-          .filter(
-            ({ phase }) =>
-              phase.isApplyExtrinsic && phase.asApplyExtrinsic.eq(index)
-          )
-          // test the events against the specific types we are looking for
-          .forEach(({ event, phase }) => {
-            const types = event.typeDef;
-            const fields = {};
-            if (event.section !== 'utility' && event.method !== 'batch') return;
+      ({
+        method
+      }, index) => {
 
-            // Loop through each of the parameters, displaying the type and data
-            event.data.forEach((data, index) => {
-              fields[types[index].type] = data.toString();
-            });
-
-            data[`${event.section}:${event.method}`] = fields;
-          });
+        if (method.section === 'utility' && method.method === 'batch') {
+          console.log(4444, method.toJSON(), index);
+        }
       }
     );
-    if (Object.keys(data).length === 0) return;
-    console.log(1244, data);
   })
+
+  const remark = '0x01ee7eb89546c3b58a884a44f1e0fcb17ad9f6054552bddfe124867dc6a12f8b0a1c1cd71897b571c4818e1d36a98a916edc39e50cddedc9ead4aa0dd20f8a6b59'
+  let buf = hexToU8a(remark);
+  console.log('decodeRemark', buf, buf.length);
+  if (buf.length === 65){
+    const a = {
+      op: buf[0],
+      communityId: stanfiAddress(buf.slice(1,33)),
+      projectId: stanfiAddress(buf.slice(-32))
+    }
+    console.log('a', a);
+  }
 
   store.commit('saveIsConnected', true)
   store.commit('saveApi', api)
@@ -83,7 +78,7 @@ export function uni2Token(uni, decimal = 10) {
   return uni.div(new BN(10).pow(decimal))
 }
 
-export function token2Uni (amount, decimal = 10) {
+export function token2Uni(amount, decimal = 10) {
   amount = parseFloat(amount)
   // need to convert amount to int first.Other wise the new BN method will cast the decimal part
   return new BN(amount * 1e6).mul(new BN(10).pow(new BN(decimal - 6)))
@@ -120,14 +115,14 @@ export const formatBalance = (b) => {
   } else if (uni >= 1e13) {
     uni = uni.div(new BN(1e9))
     unit = " K"
-  } else if (uni >= 1e9){
+  } else if (uni >= 1e9) {
     uni = uni.div(new BN(1e6))
-  } else if (uni >= 1e6){
+  } else if (uni >= 1e6) {
     uni = uni.div(new BN(1e3))
     unit = " milli "
   }
   uni = parseFloat(uni)
-  uni = (uni/1e4).toFixed(4)
+  uni = (uni / 1e4).toFixed(4)
   return uni + unit + 'DOT';
 }
 
@@ -154,6 +149,7 @@ export const stanfiAddress = (address) => {
       0
     );
   } catch (e) {
+    console.log(e);
     return false
   }
 }
