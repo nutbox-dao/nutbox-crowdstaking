@@ -23,7 +23,19 @@
                     <img src="~@/static/images/logo.png" alt="" class="logo-brand"
                          @click="selectMenu(0, '/')">
                   </div>
-                  <div class="v-menu-item flex-start-center" v-for="item,idx of vMenuOptions" :key="idx"
+                  <div class="v-menu-item flex-start-center" v-for="(item,index) of (allAccounts ? allAccounts : [])" :key="index+1000" @click="changeAccount(item)">
+                    <template>
+                          <div class="flex-between-center">
+                            <Identicon class="ident-icon" :size='26' theme='polkadot' :value="item.address"/>
+                            <div class="account-info">
+                              <div class="font-bold" style="text-align:left">{{ item.meta?item.meta.name:'' }}</div>
+                              <div>{{ formatUserAddress(item.address, false) }}</div>
+                            </div>
+                            <img class="ml-3" v-if="item.address===(account && account.address)" src="~@/static/images/selected.png" alt="">
+                          </div>
+                        </template>
+                  </div>
+                  <div class="v-menu-item flex-start-center" v-for="(item,idx) of vMenuOptions" :key="idx"
                        @click="selectMenu(item.id, item.url)">
                     <div class="v-menu-line" :class="item.id === activeNav?'active':''"></div>
                     <span class="font-bold">{{item.label}}</span>
@@ -32,12 +44,13 @@
               </b-sidebar>
             </div>
             <b-collapse id="nav-collapse" is-nav>
-              <b-navbar-nav class="mr-auto">
+              <!-- <b-navbar-nav class="mr-auto">
                 <b-nav-item v-for="item of hMenuOptions" :key="item.id"
                             href="javascript:void(0)" :class="activeNav === item.id? 'active':''"
                             @click="selectMenu(item.id, item.url)">{{ item.label }}
                 </b-nav-item>
-              </b-navbar-nav>
+              </b-navbar-nav> -->
+              <div class="mr-auto"></div>
               <div class="mobile-address">
                 <p style="word-break: break-all">{{ account && account.address}}</p>
               </div>
@@ -50,7 +63,7 @@
                         <div class="flex-between-center font18" @click="accountsPop=!accountsPop">
                           <Identicon :size='30' theme='polkadot' v-if="account" :value="account.address"/>
                           <b-avatar v-else class="mr-2" size="sm" text=""></b-avatar>
-                          <span style="margin-left:8px">{{ formatUserAddress(account && account.meta.name) }}</span>
+                          <span style="margin-left:8px">{{ formatUserAddress(account && account.meta && account.meta.name) }}</span>
                         </div>
                       </template>
                       <b-dropdown-item v-for="(item,index) of (allAccounts ? allAccounts : [])" :key="index" @click="changeAccount(item)">
@@ -58,7 +71,7 @@
                           <div class="flex-between-center">
                             <Identicon class="ident-icon" :size='30' theme='polkadot' :value="item.address"/>
                             <div class="account-info">
-                              <div class="font-bold">{{ item.meta.name }}</div>
+                              <div class="font-bold">{{ item.meta?item.meta.name:'' }}</div>
                               <div>{{ formatUserAddress(item.address) }}</div>
                             </div>
                             <img class="ml-3" v-if="item.address===(account && account.address)" src="~@/static/images/selected.png" alt="">
@@ -67,20 +80,13 @@
                       </b-dropdown-item>
                       <b-dropdown-divider v-if="Object.keys(allAccounts || []).length>0"></b-dropdown-divider>
                       <b-dropdown-item>
-                        <div class="flex-start-center" @click="selectMenu('contributions', '/contributions')">
-                          <!-- <b-avatar square size="sm" class="mr-2" style="opacity: .2">·</b-avatar> -->
-                          <img class="menu-icon" :src="contributionsIcon" alt="">
-                          <span class="menu-text">{{$t('account.contributions')}}</span>
-                        </div>
-                      </b-dropdown-item>
-                      <b-dropdown-item>
-                        <div class="flex-start-center" @click="selectMenu('dashboard', '/dashboard')" v-if="commnunityIds.indexOf(account && account.address) !== -1">
+                        <div class="flex-start-center" @click="selectMenu('dashboard', '/dashboard')" v-if="isCommunityAdmin">
                           <!-- <b-avatar square size="sm" class="mr-2" style="opacity: .2">·</b-avatar> -->
                           <img class="menu-icon" :src="dashboardIcon" alt="">
                           <span class="menu-text">{{ $t('account.dashboard') }}</span>
                         </div>
                       </b-dropdown-item>
-                      <b-dropdown-divider></b-dropdown-divider>
+                      <b-dropdown-divider v-if="isCommunityAdmin"></b-dropdown-divider>
                       <b-dropdown-item>
                         <div class="flex-start-center" @click="selectMenu('en', 'en')">
                           <!-- <b-avatar square size="sm" class="mr-2" style="opacity: .2">·</b-avatar> -->
@@ -116,7 +122,10 @@ import { mapState, mapMutations } from 'vuex'
 import ConnectWallet from './components/Buttons/ConnectWallet'
 import Identicon from '@polkadot/vue-identicon'
 import { getBalance, loadAccounts } from './utils/account'
-import { getCommnunitys } from './apis/api'
+import { getCrowdstacking } from './apis/api'
+import { subBlock } from "./utils/block"
+import { subBonded, subNominators } from "./utils/staking"
+import { stanfiAddress } from "./utils/polkadot"
 
 export default {
   name: 'App',
@@ -129,6 +138,7 @@ export default {
       'isConnected',
       'allAccounts',
       'account',
+      'crowdstakings',
       'communitys',
       'lang'
     ]),
@@ -142,13 +152,18 @@ export default {
         return item.v
       })
     },
+    isCommunityAdmin () {
+      return this.communitys.indexOf(this.account && this.account.address) !== -1
+    },
     menuOptions () {
-      return [
+      return this.isCommunityAdmin ? [
         { id: 'home', url: '/', label: this.$t('homePage.home'), h: true, v: false },
-        { id: 'kusama', url: '/kusama', label: 'Kusuma ' + this.$t('homePage.crowdloan'), h: true, v: true },
-        { id: 'polkadot', url: '/polkadot', label: 'Polkadot ' + this.$t('homePage.crowdloan'), h: true, v: true },
-        { id: 'contributions', url: '/contributions', label: this.$t('account.contributions'), h: false, v: true },
+        // { id: 'contributions', url: '/contributions', label: this.$t('account.contributions'), h: false, v: true },
         { id: 'dashboard', url: '/dashboard', label: this.$t('account.dashboard'), h: false, v: true },
+        { id: 'en', url: 'en', label: "English", h: false, v: true },
+        { id: 'zh', url: 'zh-CN', label: "中文", h: false, v: true }
+      ] : [
+        { id: 'home', url: '/', label: this.$t('homePage.home'), h: true, v: false },
         { id: 'en', url: 'en', label: "English", h: false, v: true },
         { id: 'zh', url: 'zh-CN', label: "中文", h: false, v: true }
       ];
@@ -164,9 +179,6 @@ export default {
     },
     cnIcon (){
       return this.lang === 'zh-CN' ? require('./static/images/selected.png') : require('./static/images/selected-gray.png')
-    },
-    commnunityIds () {
-      return this.communitys.map(c => c.communityId)
     }
   },
   data () {
@@ -183,15 +195,26 @@ export default {
   },
   mounted () {
     this.$i18n.locale = this.lang;
-    getCommnunitys().then(res => {
-      console.log('commnituy', res);
-      this.$store.commit('saveCommunitys', res)
+    getCrowdstacking().then(res => {
+      this.$store.commit('saveCrowdstakings', res.map(({community, project}) => ({
+        community:{
+          ...community,
+          communityId: stanfiAddress(community.communityId)
+        },
+        project: {
+          ...project,
+          projectId: stanfiAddress(project.projectId),
+          validators: project.validators.map(v => stanfiAddress(v))
+        }
+      })))
+      this.$store.commit('saveCommunitys', res.map(({community}) => community.communityId))
+    console.log('crowdstaking', this.crowdstakings);
     })
     this.setActiveMenu()
-    loadAccounts()
   },
   async created () {
-    this.$store.commit('saveSymbol', 'ROCOCO')
+    await subBlock()
+    await loadAccounts()
     // await connect();
   },
   beforeDestroy () {
@@ -221,12 +244,18 @@ export default {
       this.activeNav = id
       this.$router.push(url)
     },
-    formatUserAddress (address) {
+    formatUserAddress (address,long=true) {
       if (!address) return 'Loading Account'
-      if (address.length < 16) return address
-      const start = address.slice(0, 28)
-      const end = address.slice(-5)
-      return `${start}...`
+      if (long){
+        if (address.length < 16) return address
+        const start = address.slice(0, 28)
+        const end = address.slice(-5)
+        return `${start}...`
+      }else{
+        const start = address.slice(0, 6)
+        const end = address.slice(-6)
+        return `${start}...${end}`
+      }
     },
     showError (err) {
       this.$bvToast.toast(err, {
@@ -238,6 +267,8 @@ export default {
     changeAccount (acc) {
       this.saveAccount(acc)
       getBalance(acc)
+      subBonded()
+      subNominators()
     }
   }
 }

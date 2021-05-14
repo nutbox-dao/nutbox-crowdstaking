@@ -1,147 +1,116 @@
 <template>
-  <div class="home-page">
-    <div class="bg"></div>
-    <div class="container">
-      <div class="banner-box">
-        <b-carousel
-          id="carousel-1"
-          :interval="3000"
-          indicators
-          img-height="20rem"
-          background="RGBA(246, 247, 249, 0)"
-          style="text-shadow: 1px 1px 2px #333;"
-        >
-<!--          <b-carousel-slide v-for="(item, index) of bannerImg" :key="index"-->
-<!--                            :img-src="item">-->
-<!--            <template>-->
-<!--              <div class="row">-->
-<!--                <div class="col-md-7">-->
-<!--                  <div class="font40 font-bold text-black">The Scalable, Multichain <br>-->
-<!--                    Network for Radical Innovation.</div>-->
-<!--                  <p class="text-grey font14">Unprecedented interoperability and scalability for blockchain developers-->
-<!--                    who want to quickly push the limits of what’s possible.</p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </template>-->
-<!--          </b-carousel-slide>-->
-          <b-carousel-slide v-for="(item, index) of bannerImg" :key="index"
-                            img-blank img-alt="Blank image">
-            <template>
-              <div class="row">
-                <div class="col-md-7">
-                  <div class="font40 font-bold text-black" style="line-height: 2.2rem">The Scalable, Multichain <br>
-                    Network for Radical Innovation.</div>
-                  <p class="text-grey font14">Unprecedented interoperability and scalability for blockchain developers
-                    who want to quickly push the limits of what’s possible.</p>
-                </div>
-              </div>
-            </template>
-          </b-carousel-slide>
-        </b-carousel>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class='crowd-select card-1' @click="goto('/kusama')">
-            <img src="~@/static/images/kusama-logo.png" alt="">
-            <div class="font28 font-bold mt-2 mb-4">{{ 'Kusuma ' + $t('homePage.crowdloan') }}</div>
-            <button class="primary-btn">{{ $t('homePage.enter') }}</button>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="crowd-select card-2">
-            <img src="~@/static/images/polkadot-logo.png" alt="">
-            <div class="font28 font-bold mt-2 mb-4">{{ 'Polkadot ' + $t('homePage.crowdloan') }}</div>
-            <button class="primary-btn">{{ $t('homePage.enter') }}</button>
-          </div>
-        </div>
-      </div>
+  <div class="k-page crowdstaking-page">
+    <div class="loading-bg" v-if="!isConnected">
+      <img src="~@/static/images/loading.gif" alt="" />
+      <p class="font16">{{ $t('tip.loading') }}</p>
     </div>
+    <template v-else>
+      <div class="bg" v-if="crowdstakings.length > 0"></div>
+      <div class="empty-bg" v-else>
+        <img src="~@/static/images/empty-data.png" alt="" />
+        <p> {{ $t('tip.noAuction') }} </p>
+      </div>
+      <div class="cards-container">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-4 col-md-6" v-for="card, idx of crowdstakings" :key="idx">
+                <CrowdStakingCard
+                  :crowdstaking="card"
+                />
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
-import AccountConnector from '../components/Wallet/AccountConnector'
+import CrowdStakingCard from "../components/CrowdStakingCard";
+import { mapMutations, mapState, mapGetters } from "vuex";
 
 export default {
+  name: "Home",
   components: {
-    AccountConnector
+    CrowdStakingCard,
   },
-  data () {
-    return {
-      bannerImg: [
-        'https://picsum.photos/1024/480/?image=52',
-        // 'https://picsum.photos/1024/480/?image=54',
-        // 'https://picsum.photos/1024/480/?image=55',
-        // 'https://picsum.photos/1024/480/?image=56'
-      ]
-    }
+  computed: {
+    ...mapState(["projectFundInfos", "symbol", "isConnected", 'balance', 'crowdstakings']),
+    funds() {
+      const fundInfos = this.getFundInfos();
+      return fundInfos || [];
+    },
   },
   methods: {
-    goto (network) {
-      this.$router.push(network)
-    }
-  }
-}
+    ...mapGetters(["getFundInfos", "paraIds"]),
+    ...mapMutations([
+      "saveProjectStatus",
+      "saveProjectName",
+      "saveCommunityName",
+    ]),
+  },
+  async created() {
+    // const res = await getOnshowingCrowdloanCard({relaychain:this.symbol.toLowerCase()})
+    // await subscribeFundInfo(res);
+  },
+};
 </script>
-<style scoped lang="less">
-.home-page {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: white;
-  overflow: auto;
-  margin-bottom: 2rem;
-  padding-top: 3.6rem;
+
+<style lang="less">
+.crowdstaking-page {
+  height: 100%;
+  background: rgba(246, 247, 249, 1);
+  overflow: hidden;
+  position: relative;
   .bg {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 30rem;
-    background-image: url("~@/static/images/bg.png");
-    background-size: auto 100%;
-    background-repeat: no-repeat;
+    left: 50%;
+    top: 4.6rem;
+    transform: translateX(-50%);
+    margin: auto;
+    max-width: 34rem;
+    max-height: 34rem;
+    width: 90vw;
+    height: 90vw;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(255, 219, 27, 0.7),
+      rgba(141, 231, 255, 0)
+    );
+    background-repeat: repeat-x;
+    border-radius: 34rem;
     background-position: center top;
   }
-  .banner-box {
-    height: 20rem;
-    overflow: hidden;
-    padding: 3rem 0;
-    border-radius: 1.4rem;
+  .empty-bg {
+    position: relative;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    img {
+      height: 7rem;
+    }
   }
-}
-
-#account{
-  display: flex;
-  flex-direction: row-reverse;
-}
-.crowd-select{
-  width: 100%;
-  height: 16rem;
-  margin-top: 40px;
-  border-radius: 1.4rem;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  &.card-1 {
-    border-bottom: 4px solid #000000;
+  .loading-bg {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    img {
+      margin-top: 12rem;
+    }
+    p {
+      margin-top: 1rem;
+      font-weight: 400;
+      color: #bdbfc2;
+      line-height: 22px;
+    }
   }
-  &.card-2 {
-    border-bottom: 4px solid #E61C84;
+  .cards-container {
+    height: 100%;
+    overflow: auto;
+    padding-top: 6.6rem;
+    padding-bottom: 3rem;
   }
-  img {
-    height: 3.2rem;
-    width: 3.2rem;
-    border-radius: 3.2rem;
-    margin: 0 auto;
-    border: 1px solid #E3E5E8;
-  }
-}
-.crowd-select:hover{
-  cursor: pointer;
 }
 </style>

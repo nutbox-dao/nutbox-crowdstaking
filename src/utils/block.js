@@ -4,9 +4,8 @@
 
 // subscribe new block
 export const subBlock = async () => {
-    if (store.getters.getSubBlock()) return;
-    const api = await getApi()
     // console.log('sub block');
+    const api = await getApi()
     const subBlock = await api.rpc.chain.subscribeNewHeads((header) => {
       try {
         const number = header.number.toNumber()
@@ -15,5 +14,4 @@ export const subBlock = async () => {
   
       }
     })
-    store.commit('saveSubBlock', subBlock)
   }

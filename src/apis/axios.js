@@ -3,7 +3,7 @@ import axiosRetry from 'axios-retry'
 
 axiosRetry(axios, { retries: 5 })
 
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 15000
 
 export function get (url, params) {
   return new Promise((resolve, reject) => {

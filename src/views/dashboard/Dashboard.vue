@@ -2,17 +2,7 @@
   <div class="contribution-page">
     <div class="container">
       <div class="font-bold font32 mt-3 mb-3 text-left">{{ $t('account.dashboard') }}</div>
-      <div class="c-tabs-box">
-        <div
-          class="tab"
-          v-for="tab of tabList"
-          :key="tab.key"
-          :class="activeTab === tab.key ? 'active' : ''"
-        >
-          {{ tab.label }}
-        </div>
-      </div>
-      <DashboardCard :chain='item.key' v-show="activeTab === item.key" v-for="item of tabList" :key="item.key"/>
+      <DashboardCard/>
     </div>
   </div>
 </template>
@@ -27,12 +17,6 @@ export default {
   },
   data() {
     return {
-      activeTab: "ROCOCO",
-      tabList: [
-        { key: "KUSAMA", label: "Kusama" },
-        { key: "POLKADOT", label: "Polkadot" },
-        { key: "ROCOCO", label: "Rococo" },
-      ],
       cards:[]
     };
   },

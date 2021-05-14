@@ -1,0 +1,16 @@
+name: Nutbox crowdstaking interface deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Build and Deploy
+      uses: nutbox-dao/nutbox-crowdstaking@master
+      env:
+        BUILD_SCRIPT: npm install && npm run build
