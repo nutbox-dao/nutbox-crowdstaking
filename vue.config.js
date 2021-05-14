@@ -4,7 +4,7 @@ module.exports = {
     proxy: {
       '/api': {
         // target: 'http://1.15.101.110:3000/nps',
-        target: 'https://api.crowdloan-test.nutbox.io',
+        target: 'https://api.crowdstaking.nutbox.io',
         changeOrigin: true,
         ws: true,
         pathRewrite: {

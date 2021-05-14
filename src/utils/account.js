@@ -16,7 +16,7 @@ import { getApi, stanfiAddress } from './polkadot'
 
 export const loadAccounts = async () => {
   try {
-    await web3Enable('crowdloan')
+    await web3Enable('crowdstaking')
     let allAccounts = await web3Accounts()
     await cryptoWaitReady();
     keyring.loadAll({
@@ -28,7 +28,6 @@ export const loadAccounts = async () => {
     }))
     store.commit('saveAllAccounts', allAccounts)
     let account = store.state.account !== 'undefined' && store.state.account? store.state.account : allAccounts[0]
-    account.address = '5G9iMgtqUvq1hvkqHBNTPJmuZ17yKxr4VhfQZY6JPLTmmkfH'
     store.commit('saveAccount', account)
     await getBalance(account)
     await subNominators()

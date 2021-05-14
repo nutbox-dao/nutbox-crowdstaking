@@ -1,5 +1,5 @@
 <template>
-  <div class="k-page crowdloan-page">
+  <div class="k-page crowdstaking-page">
     <div class="loading-bg" v-if="!isConnected">
       <img src="~@/static/images/loading.gif" alt="" />
       <p class="font16">{{ $t('tip.loading') }}</p>
@@ -57,7 +57,7 @@ export default {
 </script>
 
 <style lang="less">
-.crowdloan-page {
+.crowdstaking-page {
   height: 100%;
   background: rgba(246, 247, 249, 1);
   overflow: hidden;

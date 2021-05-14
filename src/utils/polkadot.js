@@ -15,7 +15,7 @@ import {
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import BN from "bn.js"
 import {
-  POLKADOT_CHAIN_WEB_SOCKET_MAP
+  POLKADOT_WEB_SOCKET
 } from "../config"
 import store from "../store"
 
@@ -26,7 +26,7 @@ export async function getApi() {
   store.commit('saveIsConnected', false)
 
   console.log('connecting');
-  const wsProvider = new WsProvider(POLKADOT_CHAIN_WEB_SOCKET_MAP["POLKADOT"])
+  const wsProvider = new WsProvider(POLKADOT_WEB_SOCKET)
   const api = await ApiPromise.create({
     provider: wsProvider,
     rpc: jsonrpc,
