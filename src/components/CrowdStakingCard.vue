@@ -9,7 +9,7 @@
         />
       </div>
       <div class="title-text font20 font-bold">
-        <span>{{ crowdstaking.community.communityName }}</span>
+        <span>{{ crowdstaking.community.communityName + ' ' + $t('cs.community') }}</span>
       </div>
 
     </div>

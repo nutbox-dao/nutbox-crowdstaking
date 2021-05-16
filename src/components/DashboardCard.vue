@@ -16,7 +16,7 @@
               <img class="icon1" :src="item.community.iconUrl" alt="" />
             </div>
             <div class="title-text font20 font-bold">
-              <span>{{ item.community.communityName }}</span>
+              <span>{{ item.community.communityName }} {{$t('cs.community')}}</span>
             </div>
           </div>
           <div class="h-line"></div>

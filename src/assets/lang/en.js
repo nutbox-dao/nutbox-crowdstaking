@@ -50,6 +50,7 @@ module.exports = {
         nominateOk: "Nominate Success!"
     },
     cs: {
+        community:"Commnunity",
         nominate: "Nominate",
         nominated: "Nominated",
         inputBondAmount: "Please Input ",
