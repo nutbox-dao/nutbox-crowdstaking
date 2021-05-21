@@ -30,6 +30,7 @@ module.exports = {
     tip: {
         loading: "Loading, please wait",
         noAuction : "No ongoing auction",
+        noProject:"No ongoing project",
         tokenSafeTip: "Your asset would be locked into {symbol} official crowdloan pallet directly, not any accounts of Nutobx.",
         belowMinContribution:"Input is less than the minimum allowed contribution of 1.0000",
         belowMinBond: "Input is less than the minimum surggest bonded of 0.1",
