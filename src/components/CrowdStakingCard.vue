@@ -80,8 +80,6 @@ export default {
   },
   methods: {
     async nominate() {
-      this.showNominate = true
-      return;
       if (this.bonded){
         this.showNominate = true
       }else {
