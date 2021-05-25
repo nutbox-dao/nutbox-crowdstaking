@@ -103,13 +103,77 @@ export default {
     ...mapState(["symbol", "balance", "lang", "bonded", "nominators"]),
     // 用户已经投了该项目的那些节点
     availableNominators() {
-      return this.nominators.filter(
+      
+      const a = this.nominators.filter(
         ({ address }) =>
           this.crowdstaking.project.validators.indexOf(address) === -1
       );
+      console.log(123, a);
+      return [{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      },{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      },{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      },{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      },{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      },{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      },{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      },{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      },{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      },{
+        address: "114SUbKCXjmb9czpWTtS3JANSmNRwVa4mmsMrWYpRG1kDH5",
+        commission: "235%",
+        nick: 'test',
+        otherStake:'23469182',
+        ownStake: '23541235'
+      }]
     },
     // 用户还需要取消几个已经投过的节点
     needToCancelValidators() {
+      return 1
       console.log(333,this.availableNominators.length, this.crowdstaking.project.validators.length);
       return (
         this.availableNominators.length +
