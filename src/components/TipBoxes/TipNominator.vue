@@ -24,10 +24,10 @@
     </div>
     <div class="h-line"></div>
 
-    <div v-if="needToCancelValidators > 0" class="list-box">
-      <p class="text-center fon12 text-grey-light">
+      <p class="text-center fon14 text-grey" v-if="needToCancelValidators > 0">
         {{ $t("cs.cancelValidorsInfo", { n: needToCancelValidators }) }}
       </p>
+    <div v-if="needToCancelValidators > 0" class="list-box">
       <b-form-checkbox-group
         id="checkbox-group-2"
         v-model="selected"
@@ -101,12 +101,14 @@ export default {
   },
   computed: {
     ...mapState(["symbol", "balance", "lang", "bonded", "nominators"]),
+    // 用户已经投了该项目的那些节点
     availableNominators() {
       return this.nominators.filter(
         ({ address }) =>
           this.crowdstaking.project.validators.indexOf(address) === -1
       );
     },
+    // 用户还需要取消几个已经投过的节点
     needToCancelValidators() {
       console.log(333,this.availableNominators.length, this.crowdstaking.project.validators.length);
       return (
