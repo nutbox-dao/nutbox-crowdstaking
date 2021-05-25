@@ -204,6 +204,7 @@ export default {
     width: 100%;
     margin-top: 1rem;
     height: 48px;
+    min-height: 48px;
   }
   .big {
     background-image: linear-gradient(
