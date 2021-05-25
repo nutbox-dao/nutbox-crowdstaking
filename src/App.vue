@@ -122,7 +122,7 @@ import { mapState, mapMutations } from 'vuex'
 import ConnectWallet from './components/Buttons/ConnectWallet'
 import Identicon from '@polkadot/vue-identicon'
 import { getBalance, loadAccounts } from './utils/account'
-import { getCrowdstacking } from './apis/api'
+import { getCrowdstaking } from './apis/api'
 import { subBlock } from "./utils/block"
 import { subBonded, subNominators } from "./utils/staking"
 import { stanfiAddress } from "./utils/polkadot"
@@ -196,7 +196,7 @@ export default {
   },
   mounted () {
     this.$i18n.locale = this.lang;
-    getCrowdstacking().then(res => {
+    getCrowdstaking().then(res => {
       this.$store.commit('saveCrowdstakings', res.map(({community, project}) => ({
         community:{
           ...community,
